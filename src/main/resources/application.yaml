@@ -1,6 +1,9 @@
 spring:
   application:
     name: pelongpelong
+  web:
+    resources:
+      add-mappings: false
 
 logging:
   level:

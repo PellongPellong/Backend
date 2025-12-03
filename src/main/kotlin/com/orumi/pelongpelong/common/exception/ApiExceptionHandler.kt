@@ -3,6 +3,7 @@ package com.orumi.pelongpelong.common.exception
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.servlet.NoHandlerFoundException
 
 @RestControllerAdvice
 class ApiExceptionHandler {
@@ -12,5 +13,12 @@ class ApiExceptionHandler {
     fun handlePelongException(ex: PelongException): ResponseEntity<ApiErrorView> {
         val body = ApiErrorView.from(ex.messageType)
         return ResponseEntity(body, ex.messageType.status)
+    }
+
+    @ExceptionHandler(NoHandlerFoundException::class)
+    fun handleNoHandlerFound(ex: NoHandlerFoundException): ResponseEntity<ApiErrorView> {
+        val messageType = MessageType.NOT_FOUND
+        val body = ApiErrorView.from(messageType)
+        return ResponseEntity(body, messageType.status)
     }
 }
