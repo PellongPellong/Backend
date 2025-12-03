@@ -1,60 +1,55 @@
 # Gradle
-.gradle/
+/.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 
-# IntelliJ IDEA
+# Kotlin/Java
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.hprof
+/.kotlin/
+
+# Binaries
+*.bin
+/bin/
+
+# IDEs
 /.idea/
+.idea_modules/
 *.iml
 *.iws
 out/
+/.classpath
+/.project
+/.settings/
+/.vscode/
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# Kotlin/Java
-*.class
-*.log
-*.jar
-*.war
-*.ear
-
-# Eclipse
-/.classpath
-/.project
-/.settings/
-
-# VS Code
-.vscode/
-
 # Logs and temporary files
 logs/
 *.tmp
 *.temp
+tmp/
+*.swp
+*.swo
 
 # Environment
 .env
 .env.local
 local.properties
 
-# Kotlin build folders
-/.gradle/
-/build/
-
-# Test reports
+# Test reports and coverage
 /test-results/
-
-# Spring Boot specific
-spring.log
-
-# Misc
 coverage/
 
-# Keep IDE-specific library files out
-*.iml
-.idea_modules/
+# Spring Boot
+spring.log
 
-# node modules, if any front-end
+# Node modules (if front-end assets coexist)
 node_modules/
-
