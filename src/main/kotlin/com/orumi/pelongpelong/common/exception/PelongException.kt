@@ -1,5 +1,6 @@
 package com.orumi.pelongpelong.common.exception
 
 class PelongException(
-        val messageType: MessageType,
-) : RuntimeException(messageType.message)
+        val errorType: ErrorType,
+        override val message: String = errorType.message
+) : RuntimeException(message)
