@@ -58,3 +58,5 @@ coverage/
 # node modules, if any front-end
 node_modules/
 
+# Build output (explicit)
+build/
