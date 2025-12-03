@@ -55,4 +55,4 @@ spring.log
 node_modules/
 
 # dynamo data
-/dynamo_data/
+/dynamodb-data/
