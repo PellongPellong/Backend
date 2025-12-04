@@ -10,7 +10,6 @@ import com.orumi.pelongpelong.application.port.`in`.ListTodoUseCase
 import com.orumi.pelongpelong.common.exception.ErrorType
 import com.orumi.pelongpelong.common.exception.PelongException
 import com.orumi.pelongpelong.domain.todo.Todo
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -43,7 +42,7 @@ class TodoController(
     }
 
     @GetMapping("/{name}")
-    fun get(@PathVariable name: String): ResponseEntity<ApiResponse<TodoResponse>> {
+    fun get(@PathVariable name: String): ApiResult<TodoResponse> {
         val todo = getTodoUseCase.get(name)
             ?: throw PelongException(ErrorType.NOT_FOUND, "$name is not stored")
 
