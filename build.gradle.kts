@@ -27,8 +27,16 @@ dependencies {
 	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation(platform("io.kotest:kotest-bom:5.9.1"))
+	testImplementation("io.kotest:kotest-runner-junit5")
+	testImplementation("io.kotest:kotest-assertions-core")
+	testImplementation("io.kotest:kotest-property")
+	testImplementation("io.kotest.extensions:kotest-extensions-spring:1.3.0")
+	testImplementation("io.mockk:mockk:1.13.14")
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(group = "org.mockito")
+		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+	}
 	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
