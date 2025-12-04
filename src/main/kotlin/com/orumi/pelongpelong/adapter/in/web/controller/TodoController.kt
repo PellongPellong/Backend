@@ -10,6 +10,7 @@ import com.orumi.pelongpelong.application.port.`in`.ListTodoUseCase
 import com.orumi.pelongpelong.common.exception.ErrorType
 import com.orumi.pelongpelong.common.exception.PelongException
 import com.orumi.pelongpelong.domain.todo.Todo
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -26,6 +27,7 @@ data class TodoResponse(
     val name: String,
 )
 
+@Tag(name = "TODO", description = "DynamoDB 연결 확인용 API")
 @RestController
 @RequestMapping("/todos")
 class TodoController(

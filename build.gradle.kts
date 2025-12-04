@@ -30,6 +30,9 @@ dependencies {
 	implementation(platform("software.amazon.awssdk:bom:2.29.17"))
 	implementation("software.amazon.awssdk:dynamodb")
 	implementation("software.amazon.awssdk:dynamodb-enhanced")
+	// Swagger
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+	implementation("org.apache.commons:commons-lang3:3.18.0")
 
 // Conflict with Enhanced DynamoDb class loader
 //	developmentOnly("org.springframework.boot:spring-boot-devtools")
