@@ -16,3 +16,7 @@ spring:
 logging:
   level:
     com.orumi.pelongpelong.adapter.out.dynamodb: debug
+
+springdoc:
+  swagger-ui:
+    path: /swagger
