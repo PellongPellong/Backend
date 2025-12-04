@@ -1,9 +1,9 @@
-package com.orumi.pelongpelong.adapter.`in`.web
+package com.orumi.pelongpelong.adapter.`in`.web.controller
 
+import com.orumi.pelongpelong.adapter.`in`.web.response.ApiResponse
+import com.orumi.pelongpelong.adapter.`in`.web.response.ApiResult
 import com.orumi.pelongpelong.application.port.`in`.PingResult
 import com.orumi.pelongpelong.application.port.`in`.PingUseCase
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -16,13 +16,10 @@ class PingController(
     private val pingUseCase: PingUseCase,
 ) {
     @GetMapping
-    fun ping(): ResponseEntity<ApiResponse<PingResponse>> {
+    fun ping(): ApiResult<PingResponse> {
         val response = pingUseCase.ping().toResponse()
 
-        return ResponseEntity(
-                ApiResponse.success(response),
-                HttpStatus.OK
-        )
+        return ApiResponse.get(response)
     }
 }
 
