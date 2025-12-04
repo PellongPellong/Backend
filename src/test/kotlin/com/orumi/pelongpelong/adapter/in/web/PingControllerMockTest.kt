@@ -1,7 +1,9 @@
 package com.orumi.pelongpelong.adapter.`in`.web
 
+import com.orumi.pelongpelong.adapter.`in`.web.controller.PingController
 import com.orumi.pelongpelong.application.port.`in`.PingResult
 import com.orumi.pelongpelong.application.port.`in`.PingUseCase
+import com.orumi.pelongpelong.common.exception.ApiExceptionHandler
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.clearAllMocks
 import io.mockk.every
