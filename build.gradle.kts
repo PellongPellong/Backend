@@ -26,7 +26,13 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
+	// AWS SDK v2 - DynamoDB + Enhanced Client
+	implementation(platform("software.amazon.awssdk:bom:2.29.17"))
+	implementation("software.amazon.awssdk:dynamodb")
+	implementation("software.amazon.awssdk:dynamodb-enhanced")
+
+// Conflict with Enhanced DynamoDb class loader
+//	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation(platform("io.kotest:kotest-bom:5.9.1"))
 	testImplementation("io.kotest:kotest-runner-junit5")
 	testImplementation("io.kotest:kotest-assertions-core")
