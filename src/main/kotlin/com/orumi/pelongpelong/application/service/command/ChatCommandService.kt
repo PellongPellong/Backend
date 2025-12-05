@@ -1,18 +1,16 @@
-package com.orumi.pelongpelong.application.service
+package com.orumi.pelongpelong.application.service.command
 
-import com.orumi.pelongpelong.application.port.`in`.*
+import com.orumi.pelongpelong.application.port.`in`.command.ChatCommandUseCase
+import com.orumi.pelongpelong.application.port.`in`.command.CreateChatCommand
 import com.orumi.pelongpelong.application.port.out.ChatRepository
 import com.orumi.pelongpelong.domain.chat.Chat
 import org.springframework.stereotype.Service
 import java.time.Instant
 
 @Service
-class ChatService(
+class ChatCommandService(
     private val chatRepository: ChatRepository,
-) : ListChatUseCase, CreateChatUseCase, GetChatUseCase {
-
-    override fun list(): List<Chat> = chatRepository.findAll()
-            .sortedByDescending { it.sk }
+) : ChatCommandUseCase {
 
     override fun create(command: CreateChatCommand): Chat {
         // todo: bedrock에 사용자 입력으로 요청 보내기
@@ -44,7 +42,4 @@ class ChatService(
         // todo: assistant 응답으로 반환
         return chat
     }
-
-    override fun get(sessionId: String): List<Chat> = chatRepository.findByPk("SESSION#${sessionId}")
-            .sortedByDescending { it.sk }
 }

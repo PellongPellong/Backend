@@ -2,7 +2,9 @@ package com.orumi.pelongpelong.adapter.`in`.web.controller
 
 import com.orumi.pelongpelong.adapter.`in`.web.response.ApiResponse
 import com.orumi.pelongpelong.adapter.`in`.web.response.ApiResult
-import com.orumi.pelongpelong.application.port.`in`.*
+import com.orumi.pelongpelong.application.port.`in`.command.ChatCommandUseCase
+import com.orumi.pelongpelong.application.port.`in`.command.CreateChatCommand
+import com.orumi.pelongpelong.application.port.`in`.query.ChatQueryUseCase
 import com.orumi.pelongpelong.common.exception.ErrorType
 import com.orumi.pelongpelong.common.exception.PelongException
 import com.orumi.pelongpelong.domain.chat.Chat
@@ -27,14 +29,13 @@ data class ChatResponse(
 @RestController
 @RequestMapping("/chats")
 class ChatController(
-    private val listChatUseCase : ListChatUseCase,
-    private val createChatUseCase: CreateChatUseCase,
-    private val getChatUseCase: GetChatUseCase,
+        private val chatQueryUseCase : ChatQueryUseCase,
+        private val chatCommandUseCase: ChatCommandUseCase,
 ) {
 
     @PostMapping
     fun create(@RequestBody request: CreateChatRequest): ApiResult<ChatResponse> {
-        val created = createChatUseCase.create(CreateChatCommand(
+        val created = chatCommandUseCase.create(CreateChatCommand(
                 request.sessionId,
                 request.content
         ))
@@ -43,13 +44,13 @@ class ChatController(
 
     @GetMapping
     fun list(): ApiResult<List<ChatResponse>> {
-        val chats = listChatUseCase.list().map { it.toResponse() }
+        val chats = chatQueryUseCase.list().map { it.toResponse() }
         return ApiResponse.get(chats)
     }
 
     @GetMapping("/{sessionId}")
     fun get(@PathVariable sessionId: String): ApiResult<List<ChatResponse>> {
-        val chats = getChatUseCase.get(sessionId)
+        val chats = chatQueryUseCase.get(sessionId)
 
         if (chats.isEmpty()) {
             throw PelongException(
