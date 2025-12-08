@@ -22,7 +22,6 @@ class SessionIdFilter : OncePerRequestFilter() {
             filterChain: FilterChain
     ) {
         var sessionId = extractSessionIdFromCookie(request)
-        println("1. sessionId = $sessionId")
 
         // 쿠키 없으면 새로 생성
         if (sessionId == null) {
