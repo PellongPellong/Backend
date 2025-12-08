@@ -6,6 +6,7 @@ import com.orumi.pelongpelong.application.port.`in`.PingResult
 import com.orumi.pelongpelong.application.port.`in`.PingUseCase
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -23,7 +24,10 @@ class PingController(
             description = "서버가 살아있는지 확인하는 간단한 API입니다."
     )
     @GetMapping
-    fun ping(): ApiResult<PingResponse> {
+    fun ping(request: HttpServletRequest): ApiResult<PingResponse> {
+//        val sessionId = request.getAttribute(SessionIdFilter.COOKIE_ATTR) as String
+//        println("sessionId:$sessionId");
+
         val response = pingUseCase.ping().toResponse()
 
         return ApiResponse.get(response)
