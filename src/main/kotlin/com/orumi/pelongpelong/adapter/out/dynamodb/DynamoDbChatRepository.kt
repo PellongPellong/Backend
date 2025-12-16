@@ -31,7 +31,8 @@ class DynamoDbChatRepository(
 
     override fun findByPk(pk: String): List<Chat> {
         return table.query { q -> q.queryConditional(
-                QueryConditional.keyEqualTo(keyOf(pk))
+          //todo: SESSION# prefix 필수인지 확인
+                QueryConditional.keyEqualTo(keyOf("SESSION#${pk}"))
         )}
                 .items()
                 .map { it.toDomain() }
