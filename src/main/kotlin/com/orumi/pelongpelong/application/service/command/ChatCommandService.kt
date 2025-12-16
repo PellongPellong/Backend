@@ -21,10 +21,10 @@ class ChatCommandService(
 
         // DB 저장 (user)
         val chat = Chat(
-                pk = "SESSION#${command.sessionId}",
+                pk = command.sessionId,
                 sk = "TIME#${timestamp}",
                 role = "user",
-                content = command.content,
+                content = command.message,
                 inputTokenUsage = 0, // todo: bedrock의 응답에서 찾기
                 outputTokenUsage = 0 // todo: bedrock의 응답에서 찾기
         )
