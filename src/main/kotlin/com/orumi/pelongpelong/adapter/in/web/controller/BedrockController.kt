@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 data class BedrockTestRequest(
     val prompt: String,
     val modelId: String? = null,
-    val temperature: Double? = null,
+    val temperature: Float? = null,
     val maxTokens: Int? = null,
 )
 
