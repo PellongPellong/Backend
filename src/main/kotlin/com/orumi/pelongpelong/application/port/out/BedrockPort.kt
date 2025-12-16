@@ -1,7 +1,7 @@
 package com.orumi.pelongpelong.application.port.out
 
 interface BedrockPort {
-    fun invokeText(
+    fun converse(
         prompt: String,
         modelId: String? = null,
         temperature: Double? = null,
