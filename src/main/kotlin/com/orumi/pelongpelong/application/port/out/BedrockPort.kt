@@ -4,7 +4,7 @@ interface BedrockPort {
     fun converse(
         prompt: String,
         modelId: String? = null,
-        temperature: Double? = null,
+        temperature: Float? = null,
         maxTokens: Int? = null
     ): String
 }
