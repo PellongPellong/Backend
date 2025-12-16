@@ -27,11 +27,10 @@ data class BedrockTestResponse(
 class BedrockController(
     private val bedrockPort: BedrockPort,
 ) {
-
-    @Operation(summary = "Bedrock 텍스트 호출 테스트")
-    @PostMapping("/test")
-    fun invoke(@RequestBody request: BedrockTestRequest): ApiResult<BedrockTestResponse> {
-        val text = bedrockPort.invokeText(
+    @Operation(summary = "Bedrock 텍스트 converse 호출 테스트")
+    @PostMapping("/converse")
+    fun converse(@RequestBody request: BedrockTestRequest): ApiResult<BedrockTestResponse> {
+        val text = bedrockPort.converse(
             prompt = request.prompt,
             modelId = request.modelId,
             temperature = request.temperature,
