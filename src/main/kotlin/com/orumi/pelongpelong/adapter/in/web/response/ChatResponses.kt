@@ -15,11 +15,11 @@ data class ChatResponse(
       sessionId = sessionId,
       status = LocationStatus(
         locationName = "성산",
-        locationStatus = "혼잡도 80 ",
+        locationStatus = 5,
         timeTable = listOf(
-          TimeTable("10:00", 80),
-          TimeTable("11:00", 70),
-          TimeTable("12:00", 90),
+          TimeTable("10:00", 5),
+          TimeTable("11:00", 5),
+          TimeTable("12:00", 2),
         )
       ),
       recommendation = Recommendation(
@@ -38,7 +38,7 @@ data class ChatResponse(
   }
 }
 
-data class LocationStatus(val locationName: String, val locationStatus: String, val timeTable: List<TimeTable>)
+data class LocationStatus(val locationName: String, val locationStatus: Int, val timeTable: List<TimeTable>)
 data class Recommendation(val locationName: String, val story: String)
 data class Around(val name: String, val reason: String)
 data class Coupon(val name: String, val barcode: String)
