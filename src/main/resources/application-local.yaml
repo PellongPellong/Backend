@@ -1,0 +1,22 @@
+aws:
+  dynamodb:
+    region: ap-northeast-2
+    # 실제 AWS 엔드포인트 사용 시 빈 값으로 두거나 주석 처리, 로컬(테스트컨테이너/로컬스택) 시 override
+    endpoint: ""
+  credentials:
+    # 기본은 프로파일/환경변수/EC2 메타데이터 체인 사용. 필요 시 로컬에서만 채우세요.
+    accessKey: ""
+    secretKey: ""
+
+spring:
+  config:
+    activate:
+      on-profile: local
+
+logging:
+  level:
+    com.orumi.pelongpelong.adapter.out.dynamodb: debug
+
+springdoc:
+  swagger-ui:
+    path: /swagger
