@@ -18,10 +18,18 @@ class DynamoDbConfig {
 
     @Bean
     fun dynamoDbClient(
-        @Value("\${aws.dynamodb.region}") region: String,
+        @Value("\${aws.region:}") configuredRegion: String?,
         @Value("\${aws.dynamodb.endpoint:}") endpoint: String?,
         credentialsProvider: AwsCredentialsProvider
     ): DynamoDbClient {
+        val region = configuredRegion
+            ?.takeIf { it.isNotBlank() }
+            ?: System.getenv("AWS_REGION")
+            ?: System.getenv("AWS_DEFAULT_REGION")
+            ?: throw IllegalStateException(
+                "DynamoDB region is not configured. Set 'aws.dynamodb.region' or environment variable 'AWS_REGION'."
+            )
+
         val builder: DynamoDbClientBuilder = DynamoDbClient.builder()
             .region(Region.of(region))
             .credentialsProvider(credentialsProvider)
