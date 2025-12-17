@@ -1,6 +1,7 @@
 plugins {
 	kotlin("jvm") version "1.9.25"
 	kotlin("plugin.spring") version "1.9.25"
+	kotlin("plugin.jpa") version "1.9.25"
 	id("org.springframework.boot") version "3.5.8"
 	id("io.spring.dependency-management") version "1.1.7"
 }
@@ -31,10 +32,16 @@ dependencies {
 	implementation("software.amazon.awssdk:dynamodb")
 	implementation("software.amazon.awssdk:dynamodb-enhanced")
 	implementation("software.amazon.awssdk:bedrockruntime")
+	implementation("org.postgresql:postgresql")
+
+	// 필요 x
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
 
 	// Swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 	implementation("org.apache.commons:commons-lang3:3.18.0")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
 // Conflict with Enhanced DynamoDb class loader
 //	developmentOnly("org.springframework.boot:spring-boot-devtools")
