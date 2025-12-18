@@ -28,6 +28,12 @@ class ChatItem {
     @get:DynamoDbAttribute("OutputTokenUsage")
     var outputTokenUsage: Int? = null
 
+    @get:DynamoDbAttribute("UserInputText")
+    var userInputText: String? = null
+
+    @get:DynamoDbAttribute("BedrockResponseText")
+    var bedrockResponseText: String? = null
+
     /** DynamoDB → Domain */
     fun toDomain(): Chat =
         Chat(
@@ -37,6 +43,8 @@ class ChatItem {
             content = content ?: "",
             inputTokenUsage = inputTokenUsage ?: 0,
             outputTokenUsage = outputTokenUsage ?: 0,
+            userInputText = userInputText ?: "",
+            bedrockResponseText = bedrockResponseText ?: ""
         )
 
     companion object {
@@ -49,6 +57,8 @@ class ChatItem {
             this.content = chat.content
             this.inputTokenUsage = chat.inputTokenUsage
             this.outputTokenUsage = chat.outputTokenUsage
+            this.userInputText = chat.userInputText
+            this.bedrockResponseText = chat.bedrockResponseText
         }
     }
 }
