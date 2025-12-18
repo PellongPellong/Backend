@@ -8,7 +8,6 @@ class InferenceConfig {
     const val MAX_TOKENS = 1024
     const val TEMPERATURE  = 0.3f
     const val TOP_P= 0.5f
-    const val TOP_K= 0.5 // top_k는 additional model request에서 설정
 
     fun inferenceConfig() = InferenceConfiguration.builder()
       .temperature(TEMPERATURE)
