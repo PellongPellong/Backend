@@ -18,8 +18,7 @@ class BedrockToolChainingRunner(
      */
     fun run(
         prompt: String,
-        temperature: Float?,
-        maxTokens: Int?
+        maxTokens: Int? = null
     ): String {
         val history = mutableListOf<Message>()
 
@@ -44,7 +43,7 @@ class BedrockToolChainingRunner(
                     .toolConfig(toolConfigProvider())
                     .apply {
                         // 모델별 지원 여부에 따라 설정(지원하면)
-                        temperature?.let { this.inferenceConfig { it.temperature(temperature) } }
+//                        temperature?.let { this.inferenceConfig { it.temperature(temperature) } }
                         maxTokens?.let { this.inferenceConfig { it.maxTokens(maxTokens) } }
                     }
             }

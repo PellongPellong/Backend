@@ -19,8 +19,6 @@ class BedrockModelClient(
   override fun converse(
     prompt: String,
     modelId: String?,
-    temperature: Float?,
-    maxTokens: Int?
   ): String {
 
     logger.info("converse in ")
@@ -31,19 +29,10 @@ class BedrockModelClient(
       modelIdProvider = { resolvedModelId },
       toolConfigProvider = { toolFactory.toolConfiguration() },
       toolRegistry = toolFactory.toolRegistry(),
-//      systemPromptProvider = {
-//        """
-//          You are a backend AI orchestrator.
-//          - You may use tools when appropriate.
-//          - If a tool is available, prefer tool usage over guessing.
-//          - Return concise, structured answers.
-//          - and then, say "GOOD BYE!"
-//        """.trimIndent()
-//      }
     )
 
     return try {
-      runner.run(prompt, temperature, maxTokens)
+      runner.run(prompt)
     } catch (e: BedrockRuntimeException) {
       logger.error(e) { "Bedrock converse failed: statusCode=${e.statusCode()}, modelId=$resolvedModelId" }
       throw RuntimeException("Bedrock converse failed: ${e.message}", e)

@@ -10,22 +10,30 @@ import com.orumi.pelongpelong.common.exception.ErrorType
 import com.orumi.pelongpelong.common.exception.PelongException
 import com.orumi.pelongpelong.domain.chat.Chat
 import com.orumi.pelongpelong.infrastructure.config.security.SessionIdFilter
+import mu.KotlinLogging
 import org.springframework.stereotype.Service
 
+private val logger = KotlinLogging.logger {}
 @Service
 class ChatFacade(
   val bedrockPort: BedrockPort,
   val chatQueryUseCase: ChatQueryUseCase,
   val chatCommandUseCase: ChatCommandUseCase
 ) {
-  fun converse(chatCommand: ChatCommand): ChatResponse? {
+  fun converse(chatCommand: ChatCommand): ChatResponse {
     //1.save to dynamoDB
+    // 비동기 처리 필요
+    var chat = chatCommandUseCase.save(chatCommand)
 
     //2.call bedrock api
+    val responsneText = bedrockPort.converse(chatCommand.message)
 
     //3. update dynamoDB with response
+    // 비동기 처리 필요
+    chat.bedrockResponseText = responsneText
+    chat = chatCommandUseCase.update(chat)
 
-    return null
+    return chat.toResponse()
 
   }
 
