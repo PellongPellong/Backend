@@ -43,6 +43,8 @@ class ChatItem {
             content = content ?: "",
             inputTokenUsage = inputTokenUsage ?: 0,
             outputTokenUsage = outputTokenUsage ?: 0,
+            userInputText = userInputText ?: "",
+            bedrockResponseText = bedrockResponseText ?: ""
         )
 
     companion object {
@@ -55,6 +57,8 @@ class ChatItem {
             this.content = chat.content
             this.inputTokenUsage = chat.inputTokenUsage
             this.outputTokenUsage = chat.outputTokenUsage
+            this.userInputText = chat.userInputText
+            this.bedrockResponseText = chat.bedrockResponseText
         }
     }
 }
