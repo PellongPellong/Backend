@@ -7,4 +7,6 @@ data class Chat(
     val content: String,
     val inputTokenUsage: Int,
     val outputTokenUsage: Int,
+    val userInputText: String?,
+    var bedrockResponseText: String?
 )

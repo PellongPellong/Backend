@@ -28,6 +28,12 @@ class ChatItem {
     @get:DynamoDbAttribute("OutputTokenUsage")
     var outputTokenUsage: Int? = null
 
+    @get:DynamoDbAttribute("UserInputText")
+    var userInputText: String? = null
+
+    @get:DynamoDbAttribute("BedrockResponseText")
+    var bedrockResponseText: String? = null
+
     /** DynamoDB → Domain */
     fun toDomain(): Chat =
         Chat(

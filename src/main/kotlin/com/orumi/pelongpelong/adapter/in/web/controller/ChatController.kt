@@ -21,8 +21,8 @@ class ChatController(
 ) {
 
     @PostMapping
-    fun create(@RequestBody request: ChatRequest): ApiResult<ChatResponse> {
-        val chat = chatCommandUseCase.create(CreateChatCommand.of(
+    fun chat(@RequestBody request: ChatRequest): ApiResult<ChatResponse> {
+        val chat = chatCommandUseCase.save(CreateChatCommand.of(
                 request.sessionId,
                 request.message
         ))

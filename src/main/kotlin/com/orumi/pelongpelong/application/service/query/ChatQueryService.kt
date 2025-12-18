@@ -14,5 +14,5 @@ class ChatQueryService(
             .sortedByDescending { it.sk }
 
     override fun get(sessionId: String): List<Chat> = chatRepository.findByPk(sessionId)
-            .sortedByDescending { it.sk }
+            .sortedBy{ it.sk }
 }
