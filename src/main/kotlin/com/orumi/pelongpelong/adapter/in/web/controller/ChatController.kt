@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 
 @Tag(name = "Chat", description = "Bedrock LLM 대화 히스토리 API")
 @RestController
-@RequestMapping("/chats")
+@RequestMapping("/api/chats")
 class ChatController(
   private val chatFacade: ChatFacade,
 ) {
