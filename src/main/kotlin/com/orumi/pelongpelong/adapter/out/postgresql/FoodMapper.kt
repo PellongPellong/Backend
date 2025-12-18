@@ -3,8 +3,8 @@ package com.orumi.pelongpelong.adapter.out.postgresql
 import com.orumi.pelongpelong.domain.food.Food
 
 object FoodMapper {
-    fun toRow(domain: Food): FoodRow =
-        FoodRow(
+    fun toEntity(domain: Food): FoodEntity =
+        FoodEntity(
             id = domain.id,
             foodId = domain.foodId,
             name = domain.name,
@@ -17,7 +17,7 @@ object FoodMapper {
             rating = domain.rating
         )
 
-    fun toDomain(row: FoodRow): Food =
+    fun toDomain(row: FoodEntity): Food =
         Food(
             id = row.id,
             foodId = row.foodId,

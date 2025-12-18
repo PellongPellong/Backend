@@ -1,5 +1,6 @@
 package com.orumi.pelongpelong.application.service.command
 
+import com.orumi.pelongpelong.adapter.out.postgresql.FoodMapper
 import com.orumi.pelongpelong.application.port.`in`.command.CreateFoodCommand
 import com.orumi.pelongpelong.application.port.`in`.command.FoodCommandUseCase
 import com.orumi.pelongpelong.application.port.out.FoodRepository
@@ -14,7 +15,7 @@ class FoodCommandService(
 
     @Transactional
     override fun create(command: CreateFoodCommand): Food {
-        val food = foodRepository.save(Food(
+        val food = Food(
             foodId = command.foodId,
             name = command.name,
             address = command.address,
@@ -24,8 +25,9 @@ class FoodCommandService(
             categoryMiddle = command.categoryMiddle,
             categorySmall = command.categorySmall,
             rating = command.rating,
-        ))
-        return food
+        )
+        val savedFood = foodRepository.save(FoodMapper.toEntity(food))
+        return FoodMapper.toDomain(savedFood)
     }
 
 //    @Transactional

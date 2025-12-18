@@ -3,7 +3,6 @@ package com.orumi.pelongpelong.adapter.out.postgresql
 import com.orumi.pelongpelong.application.port.out.FoodRepository
 import com.orumi.pelongpelong.common.exception.ErrorType
 import com.orumi.pelongpelong.common.exception.PelongException
-import com.orumi.pelongpelong.domain.food.Food
 import org.springframework.stereotype.Component
 
 @Component
@@ -11,26 +10,22 @@ class FoodPersistenceAdapter(
     private val jpaRepository: FoodJpaRepository
 ) : FoodRepository {
 
-    override fun save(food: Food): Food {
-        val saved = jpaRepository.save(FoodMapper.toRow(food))
-        return FoodMapper.toDomain(saved)
+    override fun save(food: FoodEntity): FoodEntity {
+        return jpaRepository.save(food)
     }
 
-    override fun saveAll(foods: List<Food>): List<Food> {
-        val rows = foods.map { FoodMapper.toRow(it) }
-        val savedRows = jpaRepository.saveAll(rows)
-        return savedRows.map { FoodMapper.toDomain(it) }
+    override fun saveAll(foods: List<FoodEntity>) {
+        jpaRepository.saveAll(foods)
     }
 
-    override fun findAll(): List<Food> = jpaRepository.findAll().map(FoodMapper::toDomain)
+    override fun findAll(): List<FoodEntity> = jpaRepository.findAll()
 
-    override fun findById(id: Int): Food {
-        val row = jpaRepository.findById(id).orElseThrow{
+    override fun findById(id: Int): FoodEntity {
+        return jpaRepository.findById(id).orElseThrow{
             PelongException(
                 ErrorType.NOT_FOUND,
                 "Id [$id] has no restaurant data"
             )
         }
-        return FoodMapper.toDomain(row)
     }
 }
