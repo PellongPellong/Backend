@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
 
 @Configuration
 class SecurityConfig(
@@ -17,6 +18,7 @@ class SecurityConfig(
   @Bean
   fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
     http
+      .cors{}
       .csrf { it.disable() }
       .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
       .authorizeHttpRequests {

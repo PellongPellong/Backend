@@ -4,11 +4,8 @@ import com.orumi.pelongpelong.adapter.`in`.web.request.ChatRequest
 import com.orumi.pelongpelong.adapter.`in`.web.response.ApiResponse
 import com.orumi.pelongpelong.adapter.`in`.web.response.ApiResult
 import com.orumi.pelongpelong.adapter.`in`.web.response.ChatResponse
-import com.orumi.pelongpelong.application.port.`in`.command.ChatCommandUseCase
-import com.orumi.pelongpelong.application.port.`in`.command.CreateChatCommand
-import com.orumi.pelongpelong.application.port.`in`.query.ChatQueryUseCase
-import com.orumi.pelongpelong.common.exception.ErrorType
-import com.orumi.pelongpelong.common.exception.PelongException
+import com.orumi.pelongpelong.application.facade.ChatFacade
+import com.orumi.pelongpelong.application.port.`in`.command.ChatCommand
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
 
@@ -16,32 +13,25 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/chats")
 class ChatController(
-        private val chatQueryUseCase : ChatQueryUseCase,
-        private val chatCommandUseCase: ChatCommandUseCase,
+  private val chatFacade: ChatFacade,
 ) {
 
-    @PostMapping
-    fun create(@RequestBody request: ChatRequest): ApiResult<ChatResponse> {
-        val chat = chatCommandUseCase.create(CreateChatCommand.of(
-                request.sessionId,
-                request.message
-        ))
-        return ApiResponse.created(ChatResponse.of(chat.pk))
-    }
+  @PostMapping
+  fun chat(@RequestBody request: ChatRequest): ApiResult<ChatResponse> {
+    val chatCommand = ChatCommand.of(
+      request.sessionId,
+      request.message,
+    )
+    val chat = chatFacade.converse(chatCommand)
 
-    @GetMapping("/{sessionId}")
-    fun get(@PathVariable sessionId: String): ApiResult<List<ChatResponse>> {
-        val chats = chatQueryUseCase.get(sessionId)
+    return ApiResponse.created(ChatResponse.ofMock(chatCommand.sessionId))
+  }
 
-        if (chats.isEmpty()) {
-            throw PelongException(
-                    ErrorType.NOT_FOUND,
-                    "Session [$sessionId] has no chat history"
-            )
-        }
+  @GetMapping("/{sessionId}")
+  fun get(@PathVariable sessionId: String): ApiResult<List<ChatResponse>> {
+    val chats = chatFacade.getChatConverseHistory(sessionId)
+    val response = chats.map { it.toResponse()}
 
-        val response = chats.map { ChatResponse.of(it.pk) }
-
-        return ApiResponse.get(response)
-    }
+    return ApiResponse.get(response)
+  }
 }
