@@ -1,7 +1,7 @@
 package com.orumi.pelongpelong.adapter.out.bedrock
 
 import com.orumi.pelongpelong.application.port.out.BedrockPort
-import com.orumi.pelongpelong.application.tool.ToolFactory
+import com.orumi.pelongpelong.application.bedrocktool.ToolFactory
 import com.orumi.pelongpelong.infrastructure.config.BedrockProperties
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
@@ -24,7 +24,7 @@ class BedrockModelClient(
     logger.info("converse in ")
     val resolvedModelId = modelId ?: bedrockProperties.modelId
 
-    val runner = BedrockToolChainingRunner(
+    val chanining = BedrockToolChainingService(
       bedrockRuntimeClient = bedrockRuntimeClient,
       modelIdProvider = { resolvedModelId },
       toolConfigProvider = { toolFactory.toolConfiguration() },
@@ -32,7 +32,7 @@ class BedrockModelClient(
     )
 
     return try {
-      runner.run(prompt)
+      chanining.converseWithTools(prompt)
     } catch (e: BedrockRuntimeException) {
       logger.error(e) { "Bedrock converse failed: statusCode=${e.statusCode()}, modelId=$resolvedModelId" }
       throw RuntimeException("Bedrock converse failed: ${e.message}", e)

@@ -1,11 +1,14 @@
 package com.orumi.pelongpelong.adapter.out.bedrock
 
-import com.orumi.pelongpelong.application.tool.ToolExecution
-import com.orumi.pelongpelong.application.tool.ToolRegistry
+import com.orumi.pelongpelong.application.bedrocktool.ToolExecution
+import com.orumi.pelongpelong.application.bedrocktool.ToolRegistry
+import com.orumi.pelongpelong.application.bedrocktool.healper.AdditionalModelRequestFields
+import com.orumi.pelongpelong.application.bedrocktool.healper.InferenceConfig
+import com.orumi.pelongpelong.application.bedrocktool.healper.SystemPrompt
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient
 import software.amazon.awssdk.services.bedrockruntime.model.*
 
-class BedrockToolChainingRunner(
+class BedrockToolChainingService(
     private val bedrockRuntimeClient: BedrockRuntimeClient,
     private val modelIdProvider: () -> String,
     private val toolConfigProvider: () -> ToolConfiguration,
@@ -16,7 +19,7 @@ class BedrockToolChainingRunner(
     /**
      * END_TURN까지 돌며 최종 텍스트 반환
      */
-    fun run(
+    fun converseWithTools(
         prompt: String,
         maxTokens: Int? = null
     ): String {
@@ -36,16 +39,14 @@ class BedrockToolChainingRunner(
 
         while (true) {
             // bedrock 호출
-            val response = bedrockRuntimeClient.converse { req ->
-                req.modelId(modelIdProvider())
+            val response = bedrockRuntimeClient.converse { it ->
+                it.modelId(modelIdProvider())
                     // .system(systemBlocks) todo 시스템 프롬프트 추가
                     .messages(history)
                     .toolConfig(toolConfigProvider())
-                    .apply {
-                        // 모델별 지원 여부에 따라 설정(지원하면)
-//                        temperature?.let { this.inferenceConfig { it.temperature(temperature) } }
-                        maxTokens?.let { this.inferenceConfig { it.maxTokens(maxTokens) } }
-                    }
+                    .system(SystemPrompt.getSystemPromptBlock())
+                    .additionalModelRequestFields(AdditionalModelRequestFields.additionalModelRequestFields())
+                    .inferenceConfig(InferenceConfig.inferenceConfig())
             }
 
             val assistantMsg = response.output().message()

@@ -1,7 +1,7 @@
-package com.orumi.pelongpelong.application.tool.action
+package com.orumi.pelongpelong.application.bedrocktool.toolmodule
 
-import com.orumi.pelongpelong.application.tool.ToolHandler
-import com.orumi.pelongpelong.application.tool.ToolModule
+import com.orumi.pelongpelong.application.bedrocktool.ToolHandler
+import com.orumi.pelongpelong.application.bedrocktool.ToolModule
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.document.Document
 import software.amazon.awssdk.services.bedrockruntime.model.Tool
