@@ -1,7 +1,7 @@
 package com.orumi.pelongpelong.adapter.out.bedrock
 
 import com.orumi.pelongpelong.application.port.out.BedrockPort
-import com.orumi.pelongpelong.application.tool.ToolFactory
+import com.orumi.pelongpelong.application.bedrocktool.ToolFactory
 import com.orumi.pelongpelong.common.exception.ErrorType
 import com.orumi.pelongpelong.common.exception.PelongException
 import com.orumi.pelongpelong.infrastructure.config.BedrockProperties
@@ -21,32 +21,21 @@ class BedrockModelClient(
   override fun converse(
     prompt: String,
     modelId: String?,
-    temperature: Float?,
-    maxTokens: Int?
   ): String {
 
     logger.info("converse in ")
     val resolvedModelId = modelId ?: bedrockProperties.modelId
 
-    val runner = BedrockToolChainingRunner(
+    val chanining = BedrockToolChainingService(
       bedrockRuntimeClient = bedrockRuntimeClient,
       modelIdProvider = { resolvedModelId },
       toolConfigProvider = { toolFactory.toolConfiguration() },
       toolRegistry = toolFactory.toolRegistry(),
       bedrockProperties = bedrockProperties
-//      systemPromptProvider = {
-//        """
-//          You are a backend AI orchestrator.
-//          - You may use tools when appropriate.
-//          - If a tool is available, prefer tool usage over guessing.
-//          - Return concise, structured answers.
-//          - and then, say "GOOD BYE!"
-//        """.trimIndent()
-//      }
     )
 
     return try {
-      runner.run(prompt, temperature, maxTokens)
+      chanining.converseWithTools(prompt)
     } catch (e: BedrockRuntimeException) {
       logger.error(e) { "Bedrock converse failed: statusCode=${e.statusCode()}, modelId=$resolvedModelId" }
       throw PelongException(ErrorType.INTERNAL_SERVER_ERROR, "Bedrock converse failed: ${e.message}")

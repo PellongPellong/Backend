@@ -3,14 +3,27 @@ package com.orumi.pelongpelong.adapter.out.dynamodb
 import com.orumi.pelongpelong.application.port.out.ChatRepository
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
-import software.amazon.awssdk.enhanced.dynamodb.Key
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema
+import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional
 
 @Component
 class DynamoDbChatRepository(
   dynamoDbEnhancedClient: DynamoDbEnhancedClient,
 ) : ChatRepository {
+  override fun update(chat: ChatItem) {
+    val pk = chat.pk?.takeIf { it.isNotBlank() }
+      ?: throw IllegalArgumentException("ChatItem.pk is required for update")
+    val sk = chat.sk?.takeIf { it.isNotBlank() }
+      ?: throw IllegalArgumentException("ChatItem.sk is required for update")
+
+    val request = UpdateItemEnhancedRequest.builder(ChatItem::class.java)
+      .item(chat)
+      .ignoreNulls(true)
+      .build()
+
+    table.updateItem(request)
+  }
 
   private val table = dynamoDbEnhancedClient.table(TABLE_NAME, TableSchema.fromBean(ChatItem::class.java))
 
@@ -37,4 +50,4 @@ class DynamoDbChatRepository(
   }
 }
 
-private fun keyOf(pk: String): Key = Key.builder().partitionValue(pk).build()
+private fun keyOf(pk: String) = software.amazon.awssdk.enhanced.dynamodb.Key.builder().partitionValue(pk).build()

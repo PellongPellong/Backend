@@ -34,4 +34,10 @@ class ChatCommandService(
         chatRepository.save(ChatItem.fromDomain(chat))
         return chat
     }
+
+  override fun update(chat: Chat): Chat {
+    chatRepository.update(ChatItem.fromDomain(chat))
+    return chat
+  }
+
 }

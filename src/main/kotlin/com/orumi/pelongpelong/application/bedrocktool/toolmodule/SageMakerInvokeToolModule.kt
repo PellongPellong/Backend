@@ -1,14 +1,14 @@
-package com.orumi.pelongpelong.application.tool.action
+package com.orumi.pelongpelong.application.bedrocktool.toolmodule
 
-import com.orumi.pelongpelong.application.tool.ToolHandler
-import com.orumi.pelongpelong.application.tool.ToolModule
+import com.orumi.pelongpelong.application.bedrocktool.ToolHandler
+import com.orumi.pelongpelong.application.bedrocktool.ToolModule
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.document.Document
 import software.amazon.awssdk.services.bedrockruntime.model.Tool
 import software.amazon.awssdk.services.bedrockruntime.model.ToolInputSchema
 import software.amazon.awssdk.services.bedrockruntime.model.ToolSpecification
 
-@Component
+//@Component
 class SageMakerInvokeToolModule : ToolModule {
     // TODO 사용 예시라서 sagemaker endpoint 연결하면서 새로 구현
     override fun tool(): Tool {
