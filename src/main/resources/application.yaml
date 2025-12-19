@@ -1,6 +1,17 @@
 spring:
   application:
     name: pelongpelong
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://${AWS_RDS_POSTGRESQL_ENDPOINT}:5432/restaurant
+    username: ${AWS_RDS_POSTGRESQL_USERNAME}
+    password: ${AWS_RDS_POSTGRESQL_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate # 개발이면 update, 운영이면 validate 권장
 
 logging:
   level:
