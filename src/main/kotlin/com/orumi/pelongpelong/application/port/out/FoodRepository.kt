@@ -14,5 +14,9 @@ interface FoodRepository {
     fun findTop3ByAddress(address: String): List<FoodEntity>
 
     fun findByFoodId(foodId: String): FoodEntity
+
+    fun findTop5ByAddressContainingOrderByRatingDesc(topic: String): List<FoodEntity>
+
+
 }
 
