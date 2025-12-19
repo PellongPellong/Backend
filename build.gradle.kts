@@ -28,15 +28,15 @@ dependencies {
 	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	// AWS SDK v2 - DynamoDB + Enhanced Client
-	implementation(platform("software.amazon.awssdk:bom:2.29.17"))
+	implementation(platform("software.amazon.awssdk:bom:2.28.17"))
+	implementation("software.amazon.awssdk:sagemakerruntime")
+	implementation("software.amazon.awssdk:auth")
 	implementation("software.amazon.awssdk:dynamodb")
 	implementation("software.amazon.awssdk:dynamodb-enhanced")
 	implementation("software.amazon.awssdk:bedrockruntime")
 	implementation("org.postgresql:postgresql")
 
-	// 필요 x
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
 
 	// Swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")

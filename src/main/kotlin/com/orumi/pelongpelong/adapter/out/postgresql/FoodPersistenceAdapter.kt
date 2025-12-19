@@ -28,4 +28,12 @@ class FoodPersistenceAdapter(
             )
         }
     }
+
+    override fun findTop3ByAddress(address: String): List<FoodEntity> {
+        return jpaRepository.findTop3ByAddressContainingOrderByRatingDesc(address)
+    }
+
+    override fun findByFoodId(foodId: String): FoodEntity {
+        return jpaRepository.findByFoodId(foodId)
+    }
 }

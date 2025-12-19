@@ -16,4 +16,8 @@ class FoodQueryService(
         val food = foodRepository.findById(id)
         return FoodMapper.toDomain(food)
     }
+
+    override fun getTop3(address: String): List<Food> {
+        return foodRepository.findTop3ByAddress(address).map { FoodMapper.toDomain(it) }
+    }
 }

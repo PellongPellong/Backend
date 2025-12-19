@@ -6,4 +6,6 @@ interface FoodQueryUseCase {
     fun list(): List<Food>
 
     fun get(id: Int): Food
+
+    fun getTop3(address: String): List<Food>
 }

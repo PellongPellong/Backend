@@ -36,4 +36,7 @@ class FoodEntity (
 
     @Column(name = "rating", nullable = false)
     var rating: Double,
+
+    @OneToMany(mappedBy = "food", fetch = FetchType.EAGER)
+    var reviews: MutableList<ReviewEntity> = mutableListOf()
 )

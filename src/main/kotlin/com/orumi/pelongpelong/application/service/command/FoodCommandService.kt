@@ -1,16 +1,22 @@
 package com.orumi.pelongpelong.application.service.command
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.orumi.pelongpelong.adapter.out.postgresql.FoodMapper
+import com.orumi.pelongpelong.adapter.out.postgresql.ReviewMapper
 import com.orumi.pelongpelong.application.port.`in`.command.CreateFoodCommand
 import com.orumi.pelongpelong.application.port.`in`.command.FoodCommandUseCase
 import com.orumi.pelongpelong.application.port.out.FoodRepository
+import com.orumi.pelongpelong.application.port.out.ReviewRepository
 import com.orumi.pelongpelong.domain.food.Food
+import com.orumi.pelongpelong.domain.food.Review
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class FoodCommandService(
     private val foodRepository: FoodRepository,
+    private val reviewRepository: ReviewRepository
 ) : FoodCommandUseCase {
 
     @Transactional
@@ -37,7 +43,7 @@ class FoodCommandService(
 //
 //        val inputStream = Thread.currentThread()
 //            .contextClassLoader
-//            .getResourceAsStream("data/[file_name].json")
+//            .getResourceAsStream("data/jeju-places-with-reviews.json")
 //            ?: throw IllegalArgumentException("json file not found")
 //
 //        val root: JsonNode = mapper.readTree(inputStream)
@@ -46,41 +52,61 @@ class FoodCommandService(
 //            ?: throw IllegalArgumentException("places key not found")
 //
 //        var count = 0
+//        var countReview = 0
 //
 //        val foodsToSave = mutableListOf<Food>()
 //
+//        // get food
+//        // food id -> find review
+//        // push review
+//
 //        placesNode.map { node ->
 //            if (node["category_name"].asText().startsWith("음식점")) {
+//                // get food
 //                count++
-//                // 대중소 분류 추출
-//                val foodId = node["id"].asText()
-//                val placeName = node["name"].asText()
-//                val address = node["address"].asText()
-//                val longitude = node["x"].asDouble()
-//                val latitude = node["y"].asDouble()
-//                val categoryPath = node["category_name"].asText()
-//                val parts = parseCategoryUsingPlaceName(categoryPath, placeName)
-//                val rating = node["average_rating"].asDouble()
+//                val food = foodRepository.findByFoodId(node["id"].asText())
+//                val reviewsNode = node["reviews"]
 //
-//                val c1 = parts.getOrNull(0)
-//                val c2 = parts.getOrNull(1)
-//                val c3 = parts.getOrNull(2)
-//
-//                val food = Food(
-//                    foodId = foodId,
-//                    name = placeName,
-//                    address = address,
-//                    latitude = latitude,
-//                    longitude = longitude,
-//                    categoryLarge = c1,
-//                    categoryMiddle = c2,
-//                    categorySmall = c3,
-//                    rating = rating
-//                )
-//                foodsToSave += food
+//                reviewsNode.map { review ->
+//                    // push review
+//                    countReview++
+//                    val reviewContent = review["review"].asText()
+//                    val reviewDomain = Review(
+//                        food = FoodMapper.toDomain(food),
+//                        review = reviewContent
+//                    )
+//                    reviewRepository.save(ReviewMapper.toEntity(reviewDomain))
+//                }
+////                // 대중소 분류 추출
+////                val foodId = node["id"].asText()
+////                val placeName = node["name"].asText()
+////                val address = node["address"].asText()
+////                val longitude = node["x"].asDouble()
+////                val latitude = node["y"].asDouble()
+////                val categoryPath = node["category_name"].asText()
+////                val parts = parseCategoryUsingPlaceName(categoryPath, placeName)
+////                val rating = node["average_rating"].asDouble()
+////
+////                val c1 = parts.getOrNull(0)
+////                val c2 = parts.getOrNull(1)
+////                val c3 = parts.getOrNull(2)
+////
+////                val food = Food(
+////                    foodId = foodId,
+////                    name = placeName,
+////                    address = address,
+////                    latitude = latitude,
+////                    longitude = longitude,
+////                    categoryLarge = c1,
+////                    categoryMiddle = c2,
+////                    categorySmall = c3,
+////                    rating = rating
+////                )
+////                foodsToSave += food
 //            }
 //        }
-//        foodRepository.saveAll(foodsToSave)
+//        println("count: $count, reviewCount: $countReview")
+////        foodRepository.saveAll(foodsToSave)
 //    }
 //
 //    private fun parseCategoryUsingPlaceName(
