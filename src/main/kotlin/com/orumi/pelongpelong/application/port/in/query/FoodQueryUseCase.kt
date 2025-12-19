@@ -9,6 +9,6 @@ interface FoodQueryUseCase {
 
     fun getTop3(address: String): List<Food>
 
-    fun findTop5ByAddressContainingOrderByRatingDesc(topic: String): List<Food>
+    fun findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(topic: String): List<Food>
 
 }

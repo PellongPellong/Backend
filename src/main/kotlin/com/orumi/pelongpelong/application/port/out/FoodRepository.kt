@@ -15,7 +15,7 @@ interface FoodRepository {
 
     fun findByFoodId(foodId: String): FoodEntity
 
-    fun findTop5ByAddressContainingOrderByRatingDesc(topic: String): List<FoodEntity>
+    fun findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(topic: String): List<FoodEntity>
 
 
 }

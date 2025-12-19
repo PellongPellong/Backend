@@ -1,10 +1,8 @@
 package com.orumi.pelongpelong.application.bedrocktool.toolmodule
 
-import com.orumi.pelongpelong.adapter.out.postgresql.FoodMapper
 import com.orumi.pelongpelong.application.bedrocktool.ToolHandler
 import com.orumi.pelongpelong.application.bedrocktool.ToolModule
 import com.orumi.pelongpelong.application.port.`in`.query.FoodQueryUseCase
-import com.orumi.pelongpelong.domain.chat.Around
 import com.orumi.pelongpelong.domain.chat.Coupon
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.document.Document
@@ -68,7 +66,7 @@ class CouponToolModule(
             }
         }
   fun getCoupons(location: String): List<Coupon> {
-    val foods = FoodQueryUseCase.findTop5ByAddressContainingOrderByRatingDesc(location)
+    val foods = FoodQueryUseCase.findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(location)
     // 실제 쿠폰 조회 로직 구현
     return foods.map { Coupon(it.name, (1..10).joinToString(""){ kotlin.random.Random.nextInt(0,10).toString() }) }
   }
