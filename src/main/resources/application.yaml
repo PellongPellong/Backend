@@ -12,3 +12,5 @@ aws:
     modelId: ${AWS_BEDROCK_MODEL_ID:amazon.titan-text-lite-v1}
 #    modelId: ${AWS_BEDROCK_MODEL_ID:amazon.nova-micro-v1:0}
     timeoutMs: ${AWS_BEDROCK_TIMEOUT_MS:20000}
+    guardrailId: ${AWS_BEDROCK_GUARDRAIL_ID}
+    guardrailVersion: ${AWS_BEDROCK_GUARDRAIL_VERSION}

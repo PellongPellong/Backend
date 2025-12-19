@@ -2,6 +2,7 @@ package com.orumi.pelongpelong.adapter.out.bedrock
 
 import com.orumi.pelongpelong.application.tool.ToolExecution
 import com.orumi.pelongpelong.application.tool.ToolRegistry
+import com.orumi.pelongpelong.infrastructure.config.BedrockProperties
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient
 import software.amazon.awssdk.services.bedrockruntime.model.*
 
@@ -10,6 +11,7 @@ class BedrockToolChainingRunner(
     private val modelIdProvider: () -> String,
     private val toolConfigProvider: () -> ToolConfiguration,
     private val toolRegistry: ToolRegistry,
+    private val bedrockProperties: BedrockProperties
 //    private val systemPromptProvider: () -> String? = { null },
 ) {
 
@@ -47,6 +49,14 @@ class BedrockToolChainingRunner(
                         temperature?.let { this.inferenceConfig { it.temperature(temperature) } }
                         maxTokens?.let { this.inferenceConfig { it.maxTokens(maxTokens) } }
                     }
+                    .guardrailConfig(
+                        GuardrailConfiguration.builder()
+                            .guardrailIdentifier(bedrockProperties.guardrailId)
+                            .guardrailVersion(bedrockProperties.guardrailVersion)
+                            // trace는 디버깅에 유용: 어떤 정책에 걸렸는지 응답에 포함되도록
+                            .trace("enabled") // enabled | disabled | enabled_full
+                            .build()
+                    )
             }
 
             val assistantMsg = response.output().message()

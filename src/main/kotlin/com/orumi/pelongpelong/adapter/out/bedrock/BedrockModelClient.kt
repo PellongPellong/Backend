@@ -2,6 +2,8 @@ package com.orumi.pelongpelong.adapter.out.bedrock
 
 import com.orumi.pelongpelong.application.port.out.BedrockPort
 import com.orumi.pelongpelong.application.tool.ToolFactory
+import com.orumi.pelongpelong.common.exception.ErrorType
+import com.orumi.pelongpelong.common.exception.PelongException
 import com.orumi.pelongpelong.infrastructure.config.BedrockProperties
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
@@ -31,6 +33,7 @@ class BedrockModelClient(
       modelIdProvider = { resolvedModelId },
       toolConfigProvider = { toolFactory.toolConfiguration() },
       toolRegistry = toolFactory.toolRegistry(),
+      bedrockProperties = bedrockProperties
 //      systemPromptProvider = {
 //        """
 //          You are a backend AI orchestrator.
@@ -46,10 +49,10 @@ class BedrockModelClient(
       runner.run(prompt, temperature, maxTokens)
     } catch (e: BedrockRuntimeException) {
       logger.error(e) { "Bedrock converse failed: statusCode=${e.statusCode()}, modelId=$resolvedModelId" }
-      throw RuntimeException("Bedrock converse failed: ${e.message}", e)
+      throw PelongException(ErrorType.INTERNAL_SERVER_ERROR, "Bedrock converse failed: ${e.message}")
     } catch (e: Exception) {
       logger.error(e) { "Bedrock converse failed: ${e.message}" }
-      throw RuntimeException("Bedrock converse failed: ${e.message}", e)
+      throw PelongException(ErrorType.INTERNAL_SERVER_ERROR, "Bedrock converse failed: ${e.message}")
     }
   }
 }
