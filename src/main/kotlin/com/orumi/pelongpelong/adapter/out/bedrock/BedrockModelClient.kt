@@ -2,7 +2,6 @@ package com.orumi.pelongpelong.adapter.out.bedrock
 
 import com.orumi.pelongpelong.application.port.out.BedrockPort
 import com.orumi.pelongpelong.application.bedrocktool.ToolFactory
-import com.orumi.pelongpelong.application.tool.ToolFactory
 import com.orumi.pelongpelong.common.exception.ErrorType
 import com.orumi.pelongpelong.common.exception.PelongException
 import com.orumi.pelongpelong.infrastructure.config.BedrockProperties

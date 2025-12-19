@@ -24,6 +24,7 @@ class ChatFacade(
     //1.save to dynamoDB
     // 비동기 처리 필요
     var chat = chatCommandUseCase.save(chatCommand)
+    logger.error { chat.pk }
 
     //2.call bedrock api
     val responsneText = bedrockPort.converse(chatCommand.message)
@@ -33,6 +34,7 @@ class ChatFacade(
     chat.bedrockResponseText = responsneText
     chat = chatCommandUseCase.update(chat)
 
+    logger.error { chat.pk }
     return chat.toResponse()
 
   }
@@ -44,6 +46,16 @@ class ChatFacade(
       return chatQueryUseCase.getList(sessionId)
 
     }
+  }
+
+  fun chatUpdateTest(sessionId: String){
+    val chat = getChatConverseHistory(sessionId).firstOrNull()
+    chat?.bedrockResponseText = "Updated Response Text"
+
+    chat?.let{
+      chatCommandUseCase.update(it)
+    }
+
   }
 
 }

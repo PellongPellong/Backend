@@ -5,6 +5,7 @@ import com.orumi.pelongpelong.application.bedrocktool.ToolRegistry
 import com.orumi.pelongpelong.application.bedrocktool.healper.AdditionalModelRequestFields
 import com.orumi.pelongpelong.application.bedrocktool.healper.InferenceConfig
 import com.orumi.pelongpelong.application.bedrocktool.healper.SystemPrompt
+import com.orumi.pelongpelong.infrastructure.config.BedrockProperties
 import software.amazon.awssdk.core.document.Document
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient
 import software.amazon.awssdk.services.bedrockruntime.model.*
@@ -14,6 +15,7 @@ class BedrockToolChainingService(
   private val modelIdProvider: () -> String,
   private val toolConfigProvider: () -> ToolConfiguration,
   private val toolRegistry: ToolRegistry,
+  private val bedrockProperties: BedrockProperties,
 //    private val systemPromptProvider: () -> String? = { null },
 ) {
 
@@ -25,13 +27,6 @@ class BedrockToolChainingService(
     maxTokens: Int? = null
   ): String {
     val history = mutableListOf<Message>()
-
-    // todo 시스템 프롬프트 추가할 때
-    // val systemBlocks: List<SystemContentBlock> =
-    //     systemPromptProvider()
-    //         ?.let { sp -> listOf(SystemContentBlock.fromText(sp)) }
-    //         ?: emptyList()
-
     // 최초 유저 메시지
     history += Message.builder()
       .role(ConversationRole.USER)
@@ -54,6 +49,15 @@ class BedrockToolChainingService(
             )
           )
           .inferenceConfig(InferenceConfig.inferenceConfig())
+
+          .guardrailConfig(
+            GuardrailConfiguration.builder()
+              .guardrailIdentifier(bedrockProperties.guardrailId)
+              .guardrailVersion(bedrockProperties.guardrailVersion)
+              // trace는 디버깅에 유용: 어떤 정책에 걸렸는지 응답에 포함되도록
+              .trace("enabled") // enabled | disabled | enabled_full
+              .build()
+          )
       }
 
       val assistantMsg = response.output().message()

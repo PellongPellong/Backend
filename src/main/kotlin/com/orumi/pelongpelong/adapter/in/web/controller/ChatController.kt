@@ -22,6 +22,7 @@ class ChatController(
       request.sessionId,
       request.message,
     )
+
     val chatResponse = chatFacade.converse(chatCommand)
 
     return ApiResponse.created(chatResponse)
