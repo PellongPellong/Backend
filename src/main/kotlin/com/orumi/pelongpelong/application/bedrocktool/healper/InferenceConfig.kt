@@ -1,4 +1,4 @@
-package com.orumi.pelongpelong.adapter.out.bedrock.healper
+package com.orumi.pelongpelong.application.bedrocktool.healper
 
 import software.amazon.awssdk.services.bedrockruntime.model.InferenceConfiguration
 

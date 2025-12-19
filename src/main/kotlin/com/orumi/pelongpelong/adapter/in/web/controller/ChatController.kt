@@ -22,15 +22,16 @@ class ChatController(
       request.sessionId,
       request.message,
     )
-    val chat = chatFacade.converse(chatCommand)
 
-    return ApiResponse.created(ChatResponse.ofMock(chatCommand.sessionId))
+    val chatResponse = chatFacade.converse(chatCommand)
+
+    return ApiResponse.created(chatResponse)
   }
 
   @GetMapping("/{sessionId}")
   fun get(@PathVariable sessionId: String): ApiResult<List<ChatResponse>> {
     val chats = chatFacade.getChatConverseHistory(sessionId)
-    val response = chats.map { it.toResponse()}
+    val response = chats.map { it.toResponse() }
 
     return ApiResponse.get(response)
   }

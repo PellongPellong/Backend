@@ -1,4 +1,4 @@
-package com.orumi.pelongpelong.application.tool
+package com.orumi.pelongpelong.application.bedrocktool
 
 import software.amazon.awssdk.services.bedrockruntime.model.Tool
 

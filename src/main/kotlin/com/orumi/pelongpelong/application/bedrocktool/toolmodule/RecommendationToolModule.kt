@@ -1,7 +1,7 @@
-package com.orumi.pelongpelong.application.tool.action
+package com.orumi.pelongpelong.application.bedrocktool.toolmodule
 
-import com.orumi.pelongpelong.application.tool.ToolHandler
-import com.orumi.pelongpelong.application.tool.ToolModule
+import com.orumi.pelongpelong.application.bedrocktool.ToolHandler
+import com.orumi.pelongpelong.application.bedrocktool.ToolModule
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.document.Document
 import software.amazon.awssdk.services.bedrockruntime.model.Tool
@@ -9,16 +9,12 @@ import software.amazon.awssdk.services.bedrockruntime.model.ToolInputSchema
 import software.amazon.awssdk.services.bedrockruntime.model.ToolSpecification
 
 @Component
-class SimpleAdderToolModule : ToolModule {
+class RecommendationToolModule : ToolModule {
     override fun tool(): Tool {
         val propertiesDoc = Document.mapBuilder()
-          .putDocument("a",Document.mapBuilder()
-              .putString("type", "integer")
-              .putString("description", "First operand")
-              .build())
-          .putDocument("b",Document.mapBuilder()
-              .putString("type", "integer")
-              .putString("description", "Second operand")
+          .putDocument("base_location",Document.mapBuilder()
+              .putString("type", "string")
+              .putString("description", "base location for recommendation")
               .build())
           .build()
 
@@ -28,16 +24,15 @@ class SimpleAdderToolModule : ToolModule {
           .putList(
             "required",
             listOf(
-              Document.fromString("a"),
-              Document.fromString("b"),
+              Document.fromString("base_location"),
             )
           )
           .putBoolean("additionalProperties", false)
           .build()
 
         val spec = ToolSpecification.builder()
-          .name("simple_adder")
-          .description("tool for adding two integers")
+          .name("recommendation_tool")
+          .description("tool for search location recommendation")
           .inputSchema(ToolInputSchema.fromJson(schema))
           .build()
 
@@ -46,16 +41,16 @@ class SimpleAdderToolModule : ToolModule {
 
     override fun handler(): ToolHandler =
         object : ToolHandler {
-            override val name: String = "simple_adder"
+            override val name: String = "recommendation_tool"
             override fun handle(input: Document): Document {
                 // input은 {"a":..., "b":...} 형태라고 가정
-                val a = input.asMap()["a"]?.asNumber()?.toInt() ?: 0
-                val b = input.asMap()["b"]?.asNumber()?.toInt() ?: 0
-                val sum = a + b
+                val baseLocation = input.asMap()["base_location"]?.asString() ?: throw IllegalArgumentException("base_location is required")
 
+              //여기서 실제 tool(mehtod) 호출
                 // ToolResultContentBlock.fromJson()에 넣을 JSON
                 val resultDoc: Document = Document.mapBuilder()
-                    .putNumber("sum", sum)   // Int 그대로 넣어도 됩니다.
+                  .putString("location_name","김녕")
+                  .putString("story","김녕은 조서시대에 뭐시기가 있었던 곳으로 유명합니다.")
                     .build()
                 return resultDoc
             }

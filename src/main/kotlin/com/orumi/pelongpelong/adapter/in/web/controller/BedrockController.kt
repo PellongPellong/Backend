@@ -33,8 +33,8 @@ class BedrockController(
         val text = bedrockPort.converse(
             prompt = request.prompt,
             modelId = request.modelId,
-            temperature = request.temperature,
-            maxTokens = request.maxTokens
+//            temperature = request.temperature,
+//            maxTokens = request.maxTokens
         )
         return ApiResponse.get(BedrockTestResponse(text))
     }
