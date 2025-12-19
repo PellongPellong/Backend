@@ -1,9 +1,6 @@
 spring:
   application:
     name: pelongpelong
-  config:
-    activate:
-      on-profile: local
   datasource:
     url: jdbc:postgresql://${AWS_RDS_POSTGRESQL_ENDPOINT}:5432/restaurant
     username: ${AWS_RDS_POSTGRESQL_USERNAME}
@@ -20,8 +17,8 @@ logging:
 aws:
   bedrock:
     region: ${AWS_BEDROCK_REGION:ap-northeast-2}
-    modelId: ${AWS_BEDROCK_MODEL_ID:amazon.titan-text-lite-v1}
-#    modelId: ${AWS_BEDROCK_MODEL_ID:amazon.nova-micro-v1:0}
+#    modelId: ${AWS_BEDROCK_MODEL_ID:amazon.titan-text-lite-v1}
+    modelId: ${AWS_BEDROCK_MODEL_ID:apac.amazon.nova-pro-v1:0}
     timeoutMs: ${AWS_BEDROCK_TIMEOUT_MS:20000}
     guardrailId: ${AWS_BEDROCK_GUARDRAIL_ID}
     guardrailVersion: ${AWS_BEDROCK_GUARDRAIL_VERSION}
