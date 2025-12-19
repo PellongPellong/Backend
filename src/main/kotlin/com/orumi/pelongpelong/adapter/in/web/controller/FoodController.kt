@@ -57,12 +57,6 @@ class FoodController(
         return ApiResponse.created(created.toResponse())
     }
 
-    @GetMapping
-    fun list() : ApiResult<List<FoodResponse>> {
-        val chats = foodQueryUseCase.list().map { it.toResponse() }
-        return ApiResponse.get(chats)
-    }
-
     @GetMapping("/{id}")
     fun get(@PathVariable id: Int) : ApiResult<FoodResponse> {
         val food = foodQueryUseCase.get(id)

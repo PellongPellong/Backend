@@ -26,8 +26,20 @@ class ChatFacade(
     var chat = chatCommandUseCase.save(chatCommand)
     logger.error { chat.pk }
 
+    val chatHistory = this.getChatConverseHistory(chatCommand.sessionId).toMutableList()
+    var historyMessage = ""
+    if(chatHistory.size > 1) {
+      historyMessage += "---previous conversation history START\n"
+      chatHistory.filter { it.sk != chat.sk }.map{
+        historyMessage += "userInputMessage: ${it.userInputText} \n"
+        historyMessage += "LLM responseMessage: ${it.bedrockResponseText} \n"
+      }
+      historyMessage += "---previous conversation history END\n"
+    }
+
+
     //2.call bedrock api
-    val responsneText = bedrockPort.converse(chatCommand.message)
+    val responsneText = bedrockPort.converse(historyMessage + chatCommand.message)
 
     //3. update dynamoDB with response
     // 비동기 처리 필요
