@@ -14,7 +14,9 @@ import java.time.Duration
 data class BedrockProperties(
     val region: String,
     val modelId: String,
-    val timeoutMs: Long
+    val timeoutMs: Long,
+    val guardrailId: String,
+    val guardrailVersion: String
 )
 
 @Configuration
