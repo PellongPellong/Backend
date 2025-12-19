@@ -8,7 +8,7 @@ import software.amazon.awssdk.services.bedrockruntime.model.Tool
 import software.amazon.awssdk.services.bedrockruntime.model.ToolInputSchema
 import software.amazon.awssdk.services.bedrockruntime.model.ToolSpecification
 
-@Component
+//@Component
 class SageMakerInvokeToolModule : ToolModule {
     // TODO 사용 예시라서 sagemaker endpoint 연결하면서 새로 구현
     override fun tool(): Tool {

@@ -8,7 +8,7 @@ class AdditionalModelRequestFields {
 
     fun additionalModelRequestFields(): Document = Document.fromMap(
       mapOf(
-        "top_k" to Document.fromNumber(TOP_K)
+        "topK" to Document.fromNumber(TOP_K)
       )
     )
   }
