@@ -32,9 +32,9 @@ data class BedrockResponse(
   val coupons: List<Coupon>
 )
 
-data class LocationStatus(val locationName: String, val locationStatus: Int, val timeTable: List<TimeTable>, val coordinate: Coordinate)
-data class Recommendation(val locationName: String, val story: String, val coordinate: Coordinate)
-data class Around(val name: String, val reason: String, val coordinate: Coordinate)
+data class LocationStatus(val locationName: String, val locationStatus: Int, val timeTable: List<TimeTable>, val coordinate: Coordinate? = null)
+data class Recommendation(val locationName: String, val story: String, val coordinate: Coordinate? = null)
+data class Around(val name: String, val reason: String, val coordinate: Coordinate? = null)
 data class Coupon(val name: String, val barcode: String)
 data class TimeTable(val time: String, val congestion: Int)
 data class Coordinate(val lat: Double, val lng: Double)
