@@ -3,14 +3,14 @@ package com.orumi.pelongpelong.application.service.command
 import com.orumi.pelongpelong.adapter.out.dynamodb.ChatItem
 import com.orumi.pelongpelong.application.port.`in`.command.ChatCommandUseCase
 import com.orumi.pelongpelong.application.port.`in`.command.ChatCommand
-import com.orumi.pelongpelong.application.port.out.ChatRepository
+import com.orumi.pelongpelong.application.port.out.ChatDynamoDbPort
 import com.orumi.pelongpelong.domain.chat.Chat
 import org.springframework.stereotype.Service
 import java.time.Instant
 
 @Service
 class ChatCommandService(
-    private val chatRepository: ChatRepository,
+  private val chatDynamoDbPort: ChatDynamoDbPort,
 ) : ChatCommandUseCase {
 
     override fun save(command: ChatCommand): Chat {
@@ -31,12 +31,12 @@ class ChatCommandService(
                 userInputText = command.message,
                 bedrockResponseText= command.bedrockResponseText
         )
-        chatRepository.save(ChatItem.fromDomain(chat))
+        chatDynamoDbPort.save(ChatItem.fromDomain(chat))
         return chat
     }
 
   override fun update(chat: Chat): Chat {
-    chatRepository.update(ChatItem.fromDomain(chat))
+    chatDynamoDbPort.update(ChatItem.fromDomain(chat))
     return chat
   }
 

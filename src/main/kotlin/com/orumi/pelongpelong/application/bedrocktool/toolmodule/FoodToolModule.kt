@@ -2,7 +2,7 @@ package com.orumi.pelongpelong.application.bedrocktool.toolmodule
 
 import com.orumi.pelongpelong.application.bedrocktool.ToolHandler
 import com.orumi.pelongpelong.application.bedrocktool.ToolModule
-import com.orumi.pelongpelong.domain.chat.Around
+import com.orumi.pelongpelong.application.port.`in`.query.FoodQueryUseCase
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.document.Document
 import software.amazon.awssdk.services.bedrockruntime.model.Tool
@@ -10,7 +10,7 @@ import software.amazon.awssdk.services.bedrockruntime.model.ToolInputSchema
 import software.amazon.awssdk.services.bedrockruntime.model.ToolSpecification
 
 @Component
-class FoodToolModule : ToolModule {
+class FoodToolModule(private val foodQueryUseCase: FoodQueryUseCase) : ToolModule {
     override fun tool(): Tool {
         val propertiesDoc = Document.mapBuilder()
           .putDocument("recommend_location",Document.mapBuilder()
@@ -47,18 +47,20 @@ class FoodToolModule : ToolModule {
 
                 val recommendLocation = input.asMap()["recommend_location"]?.asString() ?: throw IllegalArgumentException("recommend_location is required")
 
-              // 여기서 툴 호출, 아마도 rdb
-                // ToolResultContentBlock.fromJson()에 넣을 JSON
-                val resultDoc: Document = Document.mapBuilder()
-                  .putList("Around",
-                    listOf(Around("고등어 식당", "고등어가 맛있어요, 별점도 높아요"), Around("흑돼지 식당", "제주에 왔으면 한번 먹어야죠"), Around("김녕카페", "아이스아메리카노 맛집") ).map {
+                val foods = foodQueryUseCase.findTop3ByAddressContainingOrderByRatingDesc(recommendLocation)
+
+                val resultDoc: Document = Document.mapBuilder().putList("Around",
+                    foods.map { food ->
                         Document.mapBuilder()
-                          .putString("name", it.name)
-                          .putString("reason", it.reason)
-                          .build()
-                    }
-                  )
-                    .build()
+                            .putString("name", food.name)
+                            .putList("reviews", food.reviews.map {
+                                Document.mapBuilder()
+                                    .putString("review", it.review)
+                                    .build()
+                            })
+                            .build()
+                    }).build()
+
                 return resultDoc
             }
         }
