@@ -5,5 +5,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface TourSpotJpaRepository : JpaRepository<TourSpotEntity, Long> {
-    fun findByName(address: String): TourSpotEntity
+    fun findByName(name: String): TourSpotEntity
+
+    fun findByNameContainingOrAddressContaining(name: String, addr: String): List<TourSpotEntity>
 }

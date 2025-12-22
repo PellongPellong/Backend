@@ -20,4 +20,8 @@ class TourSpotEntity (
 
     @Column(name = "longitude")
     var longitude: Double?,
-)
+
+    @Column(name = "place")
+    var place: String?,
+
+    )

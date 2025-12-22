@@ -5,6 +5,9 @@ import com.orumi.pelongpelong.application.bedrocktool.ToolHandler
 import com.orumi.pelongpelong.application.bedrocktool.ToolModule
 import com.orumi.pelongpelong.application.port.out.CongestionPredictionPort
 import com.orumi.pelongpelong.application.port.out.CongestionPredictionRequest
+import com.orumi.pelongpelong.application.port.out.TourSpotPort
+import com.orumi.pelongpelong.common.exception.ErrorType
+import com.orumi.pelongpelong.common.exception.PelongException
 import com.orumi.pelongpelong.domain.chat.Coordinate
 import com.orumi.pelongpelong.domain.chat.LocationStatus
 import com.orumi.pelongpelong.domain.chat.TimeTable
@@ -13,15 +16,13 @@ import software.amazon.awssdk.core.document.Document
 import software.amazon.awssdk.services.bedrockruntime.model.Tool
 import software.amazon.awssdk.services.bedrockruntime.model.ToolInputSchema
 import software.amazon.awssdk.services.bedrockruntime.model.ToolSpecification
-import software.amazon.awssdk.services.sagemakerruntime.SageMakerRuntimeClient
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.Date
 
 @Component
 class CongestionToolModule(
   private val objectMapper: ObjectMapper,
-  private val congestionPredictionPort: CongestionPredictionPort
+  private val congestionPredictionPort: CongestionPredictionPort,
+  private val tourSpotPort: TourSpotPort
 ) : ToolModule {
   override fun tool(): Tool {
     val propertiesDoc = Document.mapBuilder()
@@ -59,8 +60,11 @@ class CongestionToolModule(
       override val name: String = "congestion_tool"
       override fun handle(input: Document): Document {
         // input은 {"a":..., "b":...} 형태라고 가정
-        val baseLocation =
+        val baseLocationName =
           input.asMap()["base_location"]?.asString() ?: throw IllegalArgumentException("base_location not specified")
+        val base= tourSpotPort.findByNameContainingOrAddressContaining(baseLocationName).firstOrNull()
+        val baseLocation = base?.place ?: throw PelongException(ErrorType.NOT_FOUND,"해당 명소를 찾을 수 없습니다: $baseLocationName")
+
 
 
         var today = LocalDateTime.now()
@@ -89,7 +93,7 @@ class CongestionToolModule(
               congestion = result.predictedCongestion.toInt()
             )
           },
-          coordinate = Coordinate(lat = 0.0, lng = 0.0)
+          coordinate = Coordinate(lat = base.latitude, lng = base.longitude)
         )
 
         // sagemaker 호출
@@ -117,10 +121,8 @@ class CongestionToolModule(
           )
           .putDocument(
             "coordinates", Document.mapBuilder()
-              .putNumber("lat", 33.4356)
-              .putNumber("lng", 126.9057)
-//              .putNumber("lat", locationStatus.coordinate.lat)
-//              .putNumber("lng", locationStatus.coordinate.lng )
+              .putNumber("lat", locationStatus.coordinate!!.lat!!.toDouble())
+              .putNumber("lng", locationStatus.coordinate!!.lng!!.toDouble())
               .build()
           )
           .build()

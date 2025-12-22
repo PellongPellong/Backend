@@ -10,4 +10,8 @@ class TourSpotPersistenceAdapter(
     override fun findByName(address: String): TourSpotEntity {
         return jpaRepository.findByName(address)
     }
+
+    override fun findByNameContainingOrAddressContaining(name: String): List<TourSpotEntity>{
+        return jpaRepository.findByNameContainingOrAddressContaining(name, name)
+    }
 }

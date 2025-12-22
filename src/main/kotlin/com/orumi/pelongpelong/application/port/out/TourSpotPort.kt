@@ -4,4 +4,6 @@ import com.orumi.pelongpelong.adapter.out.postgresql.TourSpotEntity
 
 interface TourSpotPort {
     fun findByName(address: String): TourSpotEntity
+
+    fun findByNameContainingOrAddressContaining(name: String): List<TourSpotEntity>
 }
