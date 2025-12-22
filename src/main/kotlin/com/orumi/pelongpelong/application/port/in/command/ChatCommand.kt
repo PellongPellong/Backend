@@ -8,6 +8,12 @@ data class ChatCommand(
   var bedrockResponseText: String? = null
 ) {
   companion object {
-    fun of(sessionId: String?, message: String) = ChatCommand(sessionId ?: UUID.randomUUID().toString(), message)
+    fun of(sessionId: String?, message: String): ChatCommand {
+      return if (sessionId.isNullOrEmpty()) {
+        ChatCommand(UUID.randomUUID().toString(), message)
+      } else {
+        ChatCommand(sessionId, message)
+      }
+    }
   }
 }
