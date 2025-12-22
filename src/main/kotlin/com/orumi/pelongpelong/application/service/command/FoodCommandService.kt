@@ -63,8 +63,8 @@ class FoodCommandService(
                 val reviewsNode = node["reviews"]
 
                 reviewsNode
-                    .sortedByDescending { it["star"].asDouble() } // ⭐ 별점 내림차순
-                    .take(5)                                      // 상위 20개
+                    .sortedByDescending { it["star"].asDouble() }
+                    .take(5)
                     .map { reviewNode ->
                         val reviewContent = reviewNode["review"].asText()
                         println("reviewContent: $reviewContent")
