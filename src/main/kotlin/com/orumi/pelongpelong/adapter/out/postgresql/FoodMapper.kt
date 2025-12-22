@@ -3,8 +3,8 @@ package com.orumi.pelongpelong.adapter.out.postgresql
 import com.orumi.pelongpelong.domain.food.Food
 
 object FoodMapper {
-    fun toEntity(domain: Food): FoodEntity =
-        FoodEntity(
+    fun toEntity(domain: Food): FoodEntity {
+        val entity = FoodEntity(
             id = domain.id,
             foodId = domain.foodId,
             name = domain.name,
@@ -14,20 +14,30 @@ object FoodMapper {
             categoryLarge = domain.categoryLarge,
             categoryMiddle = domain.categoryMiddle,
             categorySmall = domain.categorySmall,
-            rating = domain.rating
+            rating = domain.rating,
+            reviews = mutableListOf()
         )
 
-    fun toDomain(row: FoodEntity): Food =
+        domain.reviews.forEach { reviewDomain ->
+            val reviewEntity = ReviewMapper.toEntity(reviewDomain)
+            entity.addReview(reviewEntity) // ✅ 양방향 관계 보장
+        }
+
+        return entity
+    }
+
+    fun toDomain(entity: FoodEntity): Food =
         Food(
-            id = row.id,
-            foodId = row.foodId,
-            name = row.name,
-            address = row.address,
-            latitude = row.latitude,
-            longitude = row.longitude,
-            categoryLarge = row.categoryLarge,
-            categoryMiddle = row.categoryMiddle,
-            categorySmall = row.categorySmall,
-            rating = row.rating
+            id = entity.id,
+            foodId = entity.foodId,
+            name = entity.name,
+            address = entity.address,
+            latitude = entity.latitude,
+            longitude = entity.longitude,
+            categoryLarge = entity.categoryLarge,
+            categoryMiddle = entity.categoryMiddle,
+            categorySmall = entity.categorySmall,
+            rating = entity.rating,
+            reviews = ReviewMapper.toDomainList(entity.reviews)
         )
 }

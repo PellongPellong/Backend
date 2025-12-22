@@ -1,7 +1,7 @@
 package com.orumi.pelongpelong.application.service
 
 import com.orumi.pelongpelong.application.port.`in`.CreateChatCommand
-import com.orumi.pelongpelong.application.port.out.ChatRepository
+import com.orumi.pelongpelong.application.port.out.ChatDynamoDbPort
 import com.orumi.pelongpelong.domain.chat.Chat
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
@@ -11,8 +11,8 @@ import java.time.Instant
 
 class ChatServiceTest : FunSpec({
 
-    val chatRepository = mockk<ChatRepository>()
-    val chatService = ChatService(chatRepository)
+    val chatDynamoDbPort = mockk<ChatDynamoDbPort>()
+    val chatService = ChatService(chatDynamoDbPort)
 
     afterTest {
         clearAllMocks()
@@ -38,7 +38,7 @@ class ChatServiceTest : FunSpec({
         )
 
         // Repo는 정렬되지 않은 상태로 내려준다고 가정
-        every { chatRepository.findAll() } returns listOf(chat1, chat2)
+        every { chatDynamoDbPort.findAll() } returns listOf(chat1, chat2)
 
         // when
         val result = chatService.list()
@@ -51,7 +51,7 @@ class ChatServiceTest : FunSpec({
                 "TIME#2024-01-01T10:00:00Z"
         )
 
-        verify(exactly = 1) { chatRepository.findAll() }
+        verify(exactly = 1) { chatDynamoDbPort.findAll() }
     }
 
     test("create()는 SESSION#prefix, TIME#prefix로 Chat을 생성해서 저장하고 반환한다 (role=user)") {
@@ -63,13 +63,13 @@ class ChatServiceTest : FunSpec({
 
         val savedSlot = slot<Chat>()
 
-        every { chatRepository.save(capture(savedSlot)) } answers { savedSlot.captured }
+        every { chatDynamoDbPort.save(capture(savedSlot)) } answers { savedSlot.captured }
 
         // when
         val result = chatService.create(command)
 
         // then
-        verify(exactly = 1) { chatRepository.save(any()) }
+        verify(exactly = 1) { chatDynamoDbPort.save(any()) }
 
         // 저장한 값 검증
         val saved = savedSlot.captured
@@ -107,7 +107,7 @@ class ChatServiceTest : FunSpec({
         )
 
         // 정렬되지 않은 순서로 내려온다고 가정
-        every { chatRepository.findByPk(pk) } returns listOf(oldChat, newChat)
+        every { chatDynamoDbPort.findByPk(pk) } returns listOf(oldChat, newChat)
 
         // when
         val result = chatService.get(sessionId)
@@ -122,6 +122,6 @@ class ChatServiceTest : FunSpec({
                 oldChat.sk
         )
 
-        verify(exactly = 1) { chatRepository.findByPk(pk) }
+        verify(exactly = 1) { chatDynamoDbPort.findByPk(pk) }
     }
 })

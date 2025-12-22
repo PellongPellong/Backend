@@ -36,4 +36,16 @@ class FoodEntity (
 
     @Column(name = "rating", nullable = false)
     var rating: Double,
-)
+
+    @OneToMany(
+        mappedBy = "food",
+        fetch = FetchType.EAGER,
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE],
+    )
+    var reviews: MutableList<ReviewEntity> = mutableListOf()
+) {
+    fun addReview(review: ReviewEntity) {
+        reviews.add(review)
+        review.food = this
+    }
+}
