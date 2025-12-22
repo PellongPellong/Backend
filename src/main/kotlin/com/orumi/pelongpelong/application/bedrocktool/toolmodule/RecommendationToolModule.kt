@@ -53,6 +53,11 @@ class RecommendationToolModule : ToolModule {
         val resultDoc: Document = Document.mapBuilder()
           .putString("location_name", "김녕")
           .putString("story", "김녕은 조서시대에 뭐시기가 있었던 곳으로 유명합니다.")
+          .putDocument("coordinates", Document.mapBuilder()
+            .putNumber("lat", 33.5296)
+            .putNumber("lng", 126.8880)
+            .build()
+          )
           .build()
         return resultDoc
       }

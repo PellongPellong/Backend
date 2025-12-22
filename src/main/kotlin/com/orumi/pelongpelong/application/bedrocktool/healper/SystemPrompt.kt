@@ -30,7 +30,8 @@ class SystemPrompt {
       },
       "recommendation": {
         "locationName": String,
-        "story": String
+        "story": String,
+        "coordinate": { "lat": number, "lng": number }
       },
       "around": [
         {
@@ -39,7 +40,8 @@ class SystemPrompt {
             {
                 "review": String
             }
-          ]
+          ],
+          "coordinate": { "lat": number, "lng": number }
         }
       ],
       "coupons": [
