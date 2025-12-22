@@ -10,5 +10,6 @@ object TourSpotMapper {
             address = entity.address,
             latitude = entity.latitude,
             longitude = entity.longitude,
+            place = entity.place,
         )
 }
