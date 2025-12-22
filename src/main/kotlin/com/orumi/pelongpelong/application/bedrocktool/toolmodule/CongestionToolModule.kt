@@ -96,12 +96,6 @@ class CongestionToolModule(
           coordinate = Coordinate(lat = base.latitude, lng = base.longitude)
         )
 
-        // sagemaker 호출
-        // ToolResultContentBlock.fromJson()에 넣을 JSON
-//        val resultDoc: Document = Document.fromString(
-//          objectMapper.writeValueAsString(locationStatus)
-//        )
-
         val resultDoc: Document = Document.mapBuilder()
           .putDocument(
             "LocationStatus",
