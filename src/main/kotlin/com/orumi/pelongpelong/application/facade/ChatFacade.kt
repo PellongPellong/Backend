@@ -1,6 +1,5 @@
 package com.orumi.pelongpelong.application.facade
 
-import com.orumi.pelongpelong.adapter.`in`.web.request.ChatRequest
 import com.orumi.pelongpelong.adapter.`in`.web.response.ChatResponse
 import com.orumi.pelongpelong.application.port.`in`.command.ChatCommand
 import com.orumi.pelongpelong.application.port.`in`.command.ChatCommandUseCase
@@ -9,7 +8,6 @@ import com.orumi.pelongpelong.application.port.out.BedrockPort
 import com.orumi.pelongpelong.common.exception.ErrorType
 import com.orumi.pelongpelong.common.exception.PelongException
 import com.orumi.pelongpelong.domain.chat.Chat
-import com.orumi.pelongpelong.infrastructure.config.security.SessionIdFilter
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 
@@ -39,11 +37,11 @@ class ChatFacade(
 
 
     //2.call bedrock api
-    val responsneText = bedrockPort.converse(historyMessage + chatCommand.message)
+    val responseText = bedrockPort.converse(historyMessage + chatCommand.message)
 
     //3. update dynamoDB with response
     // 비동기 처리 필요
-    chat.bedrockResponseText = responsneText
+    chat.bedrockResponseText = responseText
     chat = chatCommandUseCase.update(chat)
 
     logger.error { chat.pk }

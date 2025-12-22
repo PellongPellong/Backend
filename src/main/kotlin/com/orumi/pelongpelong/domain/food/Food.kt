@@ -11,4 +11,5 @@ data class Food (
     val categoryMiddle: String?,
     val categorySmall: String?,
     val rating: Double,
+    val reviews: List<Review>
 )
