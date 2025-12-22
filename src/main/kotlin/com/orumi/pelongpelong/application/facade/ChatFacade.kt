@@ -37,6 +37,8 @@ class ChatFacade(
 
 
     //2.call bedrock api
+//    val baseLocation = bedrockPort.invoke(chatCommand.message )
+//    val responseText = bedrockPort.converse(historyMessage + chatCommand.message + "***base_location: ${baseLocation} ***")
     val responseText = bedrockPort.converse(historyMessage + chatCommand.message)
 
     //3. update dynamoDB with response

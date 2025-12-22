@@ -34,7 +34,7 @@ class RecommendationToolModule : ToolModule {
 
     val spec = ToolSpecification.builder()
       .name("recommendation_tool")
-      .description("tool for search location recommendation")
+      .description("tool for search location recommendation use this tool if base_location's congestion is high")
       .inputSchema(ToolInputSchema.fromJson(schema))
       .build()
 
