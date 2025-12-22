@@ -37,4 +37,4 @@ data class Recommendation(val locationName: String, val story: String, val coord
 data class Around(val name: String, val reason: String, val coordinate: Coordinate? = null)
 data class Coupon(val name: String, val barcode: String)
 data class TimeTable(val time: String, val congestion: Int)
-data class Coordinate(val lat: Double, val lng: Double)
+data class Coordinate(val lat: Double?, val lng: Double?)

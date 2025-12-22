@@ -12,6 +12,7 @@ class SystemPrompt {
         혼잡 할 경우 대안을 제시해 주는 안내를 해 주세요.
         안내된 여행지 근처의 카페, 식당도 함께 추천 해 주세요 .
         모든 동작은 한국어로만 합니다.
+        사용자의 목적지는 읍/면/동으로 변환해야합니다.
       """
 
     const val RESPONSE_TYPE_FIXER = """ 
@@ -30,7 +31,8 @@ class SystemPrompt {
       },
       "recommendation": {
         "locationName": String,
-        "story": String
+        "story": String,
+        "coordinate": { "lat": number, "lng": number }
       },
       "around": [
         {
@@ -39,7 +41,8 @@ class SystemPrompt {
             {
                 "review": String
             }
-          ]
+          ],
+          "coordinate": { "lat": number, "lng": number }
         }
       ],
       "coupons": [

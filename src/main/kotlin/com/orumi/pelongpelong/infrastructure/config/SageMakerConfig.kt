@@ -10,7 +10,7 @@ import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sagemakerruntime.SageMakerRuntimeClient
 import java.time.Duration
 
-@ConfigurationProperties(prefix = "aws.bedrock") // 전체 공통 리전으로 바꿔야함.
+@ConfigurationProperties(prefix = "aws.sagemaker") // 전체 공통 리전으로 바꿔야함.
 data class SageMakerProperties(
     val region: String,
     val timeoutMs: Long,

@@ -5,4 +5,9 @@ interface BedrockPort {
         prompt: String,
         modelId: String? = null,
     ): String
+
+    fun invoke(
+        prompt: String,
+        modelId: String? = null,
+    ): String
 }
