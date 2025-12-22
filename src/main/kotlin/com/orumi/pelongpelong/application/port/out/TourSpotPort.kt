@@ -6,4 +6,6 @@ interface TourSpotPort {
     fun findByName(address: String): TourSpotEntity
 
     fun findByNameContainingOrAddressContaining(name: String): List<TourSpotEntity>
+
+    fun findTop1ByPlace(place: String): TourSpotEntity
 }

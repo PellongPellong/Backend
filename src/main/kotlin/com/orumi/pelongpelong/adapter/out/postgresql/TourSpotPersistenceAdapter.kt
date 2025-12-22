@@ -14,4 +14,8 @@ class TourSpotPersistenceAdapter(
     override fun findByNameContainingOrAddressContaining(name: String): List<TourSpotEntity>{
         return jpaRepository.findByNameContainingOrAddressContaining(name, name)
     }
+
+    override fun findTop1ByPlace(place: String): TourSpotEntity {
+        return jpaRepository.findTop1ByPlace(place)
+    }
 }

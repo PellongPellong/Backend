@@ -2,22 +2,22 @@ package com.orumi.pelongpelong.application.bedrocktool.toolmodule
 
 import com.orumi.pelongpelong.application.bedrocktool.ToolHandler
 import com.orumi.pelongpelong.application.bedrocktool.ToolModule
-import com.orumi.pelongpelong.application.port.out.TourSpotPort
-import com.orumi.pelongpelong.common.exception.ErrorType
-import com.orumi.pelongpelong.common.exception.PelongException
 import mu.KotlinLogging
+import com.orumi.pelongpelong.application.port.`in`.query.StoryQueryUseCase
+import com.orumi.pelongpelong.application.port.`in`.query.TourSpotQueryUseCase
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.document.Document
 import software.amazon.awssdk.services.bedrockruntime.model.Tool
 import software.amazon.awssdk.services.bedrockruntime.model.ToolInputSchema
 import software.amazon.awssdk.services.bedrockruntime.model.ToolSpecification
-import kotlin.math.cos
+import kotlin.math.*
 
 private val logger= KotlinLogging.logger {}
 @Component
 class RecommendationToolModule(
   //todo: db 조회 관련 service 또는 facade로 변경해야함
-  private val tourSpotPort: TourSpotPort,
+    private val storyQueryUseCase: StoryQueryUseCase,
+    private val tourSpotQueryUseCase: TourSpotQueryUseCase
 ) : ToolModule {
   override fun tool(): Tool {
     val propertiesDoc = Document.mapBuilder()
@@ -50,49 +50,93 @@ class RecommendationToolModule(
     return Tool.fromToolSpec(spec)
   }
 
-  override fun handler(): ToolHandler =
-    object : ToolHandler {
-      override val name: String = "recommendation_tool"
-      override fun handle(input: Document): Document {
-        val baseLocationName =
-          input.asMap()["base_location"]?.asString() ?: throw IllegalArgumentException("base_location is required")
-        logger.info { "----------------------:: base location for recommend : $baseLocationName" }
+    override fun handler(): ToolHandler =
+        object : ToolHandler {
+            override val name: String = "recommendation_tool"
+            override fun handle(input: Document): Document {
+                val baseLocationName = input.asMap()["base_location"]?.asString() ?: throw IllegalArgumentException("base_location is required")
 
-        val base= tourSpotPort.findByNameContainingOrAddressContaining(baseLocationName).firstOrNull()
-        if(base == null){
-          throw PelongException(ErrorType.NOT_FOUND,"base_location not found in DB: $baseLocationName")
+                println("baseLocationName: $baseLocationName")
+
+                val base = tourSpotQueryUseCase.findTop1ByPlace(baseLocationName)
+
+                println("tourSpot: $base")
+
+                // 1. 목적지 위경도 고정
+                val baseLat = base.latitude
+                val baseLon = base.longitude
+                val km = 5.0
+
+                // 2. 반경 5km 이내 후보 조회
+                val box = boundingBox(baseLat, baseLon, km)
+
+                val rough = storyQueryUseCase.findByLatBetweenAndLonBetweenOrderByScoreDesc( // score 내림차순으로 했을 때 가장 첫번째
+                    box.minLat, box.maxLat, box.minLng, box.maxLng
+                )
+
+                val within5km = rough.filter {
+                    haversineKm(baseLat, baseLon, it.lat, it.lon) <= km
+                }
+
+//                /* ============================
+//                 * 3. 결과 결정 (fallback 포함)
+//                 * ============================ */
+                val recommendation = within5km.first()
+
+//                    if (within5km.isNotEmpty()) {
+//                    within5km.first()
+//                } else {
+//                    // TODO: LLM fallback
+//                    // - baseLocation 기준 대체 장소 생성
+//                    // - 위도/경도 포함 가능
+////                    requestRecommendationFromLlm(baseLocation)
+//                }
+
+                println("within5km: $within5km")
+                println("bestChoice: $recommendation")
+                val resultDoc: Document = Document.mapBuilder()
+                    .putDocument("Recommendation", Document.mapBuilder()
+                        .putString("locationName", recommendation.placeName)
+                        .putString("story",recommendation.story)
+                        .build()
+                    )
+                    .build()
+//
+                return resultDoc
+            }
         }
+    private data class BoundingBox(val minLat: Double, val maxLat: Double, val minLng: Double, val maxLng: Double)
 
+    //기준점 기반 최대,최소 위ㅣ경도 계산
+    private fun boundingBox(lat: Double, lon: Double, radiusKm: Double): BoundingBox {
+        val r = 6371.0
+        val latRad = Math.toRadians(lat)
 
+        val latDelta = Math.toDegrees(radiusKm / r)
+        val lonDelta = Math.toDegrees(radiusKm / (r * cos(latRad)))
 
-
-
-
-        //여기서 실제 tool(mehtod) 호출
-        // ToolResultContentBlock.fromJson()에 넣을 JSON
-        val resultDoc: Document = Document.mapBuilder()
-          .putString("location_name", "김녕")
-          .putString("story", "김녕은 조서시대에 뭐시기가 있었던 곳으로 유명합니다.")
-          .putDocument("coordinates", Document.mapBuilder()
-            .putNumber("lat", 33.5296)
-            .putNumber("lng", 126.8880)
-            .build()
-          )
-          .build()
-        return resultDoc
-      }
+        return BoundingBox(
+            minLat = lat - latDelta,
+            maxLat = lat + latDelta,
+            minLng = lon - lonDelta,
+            maxLng = lon + lonDelta
+        )
     }
 
-  //기준점 기반 최대,최소 위ㅣ경도 계산
-  fun bboxAround(lat: Double, lng: Double, radiusKm: Double = 5.0): BoundingBox {
-    val deltaLat = radiusKm / 111.32
-    val deltaLng = radiusKm / (111.32 * cos(Math.toRadians(lat)))
-    return BoundingBox(
-      minLat = lat - deltaLat,
-      maxLat = lat + deltaLat,
-      minLng = lng - deltaLng,
-      maxLng = lng + deltaLng,
-    )
-  }
+    private fun haversineKm(lat1: Double, lon1: Double, lat2: Double?, lon2: Double?): Double {
+        if (lat2 == null || lon2 == null) {
+            return 0.0
+        }
+        val r = 6371.0
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+
+        val a = sin(dLat / 2).pow(2.0) +
+                cos(Math.toRadians(lat1)) *
+                cos(Math.toRadians(lat2)) *
+                sin(dLon / 2).pow(2.0)
+
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        return r * c
+    }
 }
-data class BoundingBox(val minLat: Double, val maxLat: Double, val minLng: Double, val maxLng: Double)

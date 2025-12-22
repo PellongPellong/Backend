@@ -16,12 +16,11 @@ class TourSpotEntity (
     var address: String?,
 
     @Column(name = "latitude")
-    var latitude: Double?,
+    var latitude: Double,
 
     @Column(name = "longitude")
-    var longitude: Double?,
+    var longitude: Double,
 
     @Column(name = "place")
-    var place: String?,
-
-    )
+    var place: String,
+)
