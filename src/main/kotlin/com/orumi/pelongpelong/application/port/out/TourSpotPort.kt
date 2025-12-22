@@ -1,0 +1,7 @@
+package com.orumi.pelongpelong.application.port.out
+
+import com.orumi.pelongpelong.adapter.out.postgresql.TourSpotEntity
+
+interface TourSpotPort {
+    fun findByName(address: String): TourSpotEntity
+}
