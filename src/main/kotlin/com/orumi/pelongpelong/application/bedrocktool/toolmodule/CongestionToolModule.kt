@@ -80,7 +80,13 @@ class CongestionToolModule : ToolModule {
                     .build()
                 }
               ).build()
-          ).build()
+          )
+          .putDocument("coordinates", Document.mapBuilder()
+            .putNumber("lat", 33.4356)
+            .putNumber("lng", 126.9057)
+            .build()
+          )
+          .build()
         return resultDoc
       }
     }
