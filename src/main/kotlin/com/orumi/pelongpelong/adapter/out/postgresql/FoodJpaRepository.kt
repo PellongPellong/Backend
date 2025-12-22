@@ -12,7 +12,7 @@ interface FoodJpaRepository : JpaRepository<FoodEntity, Int> {
     fun findByFoodId(foodId: String): FoodEntity
 
     fun findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(
-        topic: String
+        topic: String, address: String
     ): List<FoodEntity>
 
 }

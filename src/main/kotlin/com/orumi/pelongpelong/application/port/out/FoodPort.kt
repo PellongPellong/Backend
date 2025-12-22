@@ -2,7 +2,7 @@ package com.orumi.pelongpelong.application.port.out
 
 import com.orumi.pelongpelong.adapter.out.postgresql.FoodEntity
 
-interface FoodRepository {
+interface FoodPort {
     fun save(food: FoodEntity): FoodEntity
 
     fun saveAll(foods: List<FoodEntity>)
@@ -15,7 +15,7 @@ interface FoodRepository {
 
     fun findByFoodId(foodId: String): FoodEntity
 
-    fun findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(topic: String): List<FoodEntity>
+    fun findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(topic: String, address: String): List<FoodEntity>
 
 
 }

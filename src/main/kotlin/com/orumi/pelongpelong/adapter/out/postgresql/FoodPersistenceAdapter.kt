@@ -1,6 +1,6 @@
 package com.orumi.pelongpelong.adapter.out.postgresql
 
-import com.orumi.pelongpelong.application.port.out.FoodRepository
+import com.orumi.pelongpelong.application.port.out.FoodPort
 import com.orumi.pelongpelong.common.exception.ErrorType
 import com.orumi.pelongpelong.common.exception.PelongException
 import org.springframework.stereotype.Component
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 @Component
 class FoodPersistenceAdapter(
     private val jpaRepository: FoodJpaRepository
-) : FoodRepository {
+) : FoodPort {
 
     override fun save(food: FoodEntity): FoodEntity {
         return jpaRepository.save(food)
@@ -37,6 +37,6 @@ class FoodPersistenceAdapter(
         return jpaRepository.findByFoodId(foodId)
     }
 
-    override fun findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(address: String): List<FoodEntity> {
-        return jpaRepository.findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(address)
+    override fun findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(topic: String, address: String): List<FoodEntity> {
+        return jpaRepository.findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(topic, address)
     }}

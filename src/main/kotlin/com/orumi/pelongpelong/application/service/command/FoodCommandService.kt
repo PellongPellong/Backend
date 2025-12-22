@@ -6,8 +6,8 @@ import com.orumi.pelongpelong.adapter.out.postgresql.FoodMapper
 import com.orumi.pelongpelong.adapter.out.postgresql.ReviewMapper
 import com.orumi.pelongpelong.application.port.`in`.command.CreateFoodCommand
 import com.orumi.pelongpelong.application.port.`in`.command.FoodCommandUseCase
-import com.orumi.pelongpelong.application.port.out.FoodRepository
-import com.orumi.pelongpelong.application.port.out.ReviewRepository
+import com.orumi.pelongpelong.application.port.out.FoodPort
+import com.orumi.pelongpelong.application.port.out.ReviewPort
 import com.orumi.pelongpelong.domain.food.Food
 import com.orumi.pelongpelong.domain.food.Review
 import org.springframework.stereotype.Service
@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class FoodCommandService(
-    private val foodRepository: FoodRepository,
-    private val reviewRepository: ReviewRepository
+    private val foodPort: FoodPort,
+    private val reviewPort: ReviewPort
 ) : FoodCommandUseCase {
 
     @Transactional
@@ -34,7 +34,7 @@ class FoodCommandService(
             reviews = emptyList()
         )
 
-        val savedFood = foodRepository.save(
+        val savedFood = foodPort.save(
             FoodMapper.toEntity(food)
         )
 
@@ -59,7 +59,7 @@ class FoodCommandService(
         placesNode.map { node ->
             if (node["category_name"].asText().startsWith("음식점")) {
                 // get food
-                val food = foodRepository.findByFoodId(node["id"].asText())
+                val food = foodPort.findByFoodId(node["id"].asText())
                 val reviewsNode = node["reviews"]
 
                 reviewsNode
@@ -76,7 +76,7 @@ class FoodCommandService(
                         )
                     }
 
-                foodRepository.save(food)
+                foodPort.save(food)
             }
         }
     }

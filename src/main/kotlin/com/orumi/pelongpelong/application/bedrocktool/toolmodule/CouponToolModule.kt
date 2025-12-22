@@ -12,7 +12,7 @@ import software.amazon.awssdk.services.bedrockruntime.model.ToolSpecification
 
 @Component
 class CouponToolModule(
-  private val FoodQueryUseCase: FoodQueryUseCase
+  private val foodQueryUseCase: FoodQueryUseCase
 ) : ToolModule {
     override fun tool(): Tool {
         val propertiesDoc = Document.mapBuilder()
@@ -66,7 +66,7 @@ class CouponToolModule(
             }
         }
   fun getCoupons(location: String): List<Coupon> {
-    val foods = FoodQueryUseCase.findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(location)
+    val foods = foodQueryUseCase.findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(location)
     // 실제 쿠폰 조회 로직 구현
     return foods.map { Coupon(it.name, (1..10).joinToString(""){ kotlin.random.Random.nextInt(0,10).toString() }) }
   }

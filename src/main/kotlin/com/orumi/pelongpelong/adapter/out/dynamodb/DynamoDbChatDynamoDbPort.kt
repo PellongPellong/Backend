@@ -1,6 +1,6 @@
 package com.orumi.pelongpelong.adapter.out.dynamodb
 
-import com.orumi.pelongpelong.application.port.out.ChatRepository
+import com.orumi.pelongpelong.application.port.out.ChatDynamoDbPort
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema
@@ -8,9 +8,9 @@ import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional
 
 @Component
-class DynamoDbChatRepository(
+class DynamoDbChatDynamoDbPort(
   dynamoDbEnhancedClient: DynamoDbEnhancedClient,
-) : ChatRepository {
+) : ChatDynamoDbPort {
   override fun update(chat: ChatItem) {
     val pk = chat.pk?.takeIf { it.isNotBlank() }
       ?: throw IllegalArgumentException("ChatItem.pk is required for update")
