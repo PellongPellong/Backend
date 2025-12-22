@@ -58,7 +58,9 @@ class RecommendationToolModule(
 
                 println("baseLocationName: $baseLocationName")
 
-                val base = tourSpotQueryUseCase.findTop1ByPlace(baseLocationName)
+                val base = tourSpotQueryUseCase.findByNameContainingOrAddressContaining(baseLocationName).first()
+
+                // todo 없는 경우 처리
 
                 println("tourSpot: $base")
 
@@ -78,22 +80,8 @@ class RecommendationToolModule(
                     haversineKm(baseLat, baseLon, it.lat, it.lon) <= km
                 }
 
-//                /* ============================
-//                 * 3. 결과 결정 (fallback 포함)
-//                 * ============================ */
                 val recommendation = within5km.first()
 
-//                    if (within5km.isNotEmpty()) {
-//                    within5km.first()
-//                } else {
-//                    // TODO: LLM fallback
-//                    // - baseLocation 기준 대체 장소 생성
-//                    // - 위도/경도 포함 가능
-////                    requestRecommendationFromLlm(baseLocation)
-//                }
-
-                println("within5km: $within5km")
-                println("bestChoice: $recommendation")
                 val resultDoc: Document = Document.mapBuilder()
                     .putDocument("Recommendation", Document.mapBuilder()
                         .putString("locationName", recommendation.placeName)
@@ -101,7 +89,7 @@ class RecommendationToolModule(
                         .build()
                     )
                     .build()
-//
+
                 return resultDoc
             }
         }

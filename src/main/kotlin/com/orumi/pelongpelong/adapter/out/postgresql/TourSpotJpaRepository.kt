@@ -8,6 +8,4 @@ interface TourSpotJpaRepository : JpaRepository<TourSpotEntity, Long> {
     fun findByName(name: String): TourSpotEntity
 
     fun findByNameContainingOrAddressContaining(name: String, addr: String): List<TourSpotEntity>
-
-    fun findTop1ByPlace(place: String): TourSpotEntity
 }
