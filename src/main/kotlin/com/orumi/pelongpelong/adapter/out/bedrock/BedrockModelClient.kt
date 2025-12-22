@@ -26,7 +26,6 @@ class BedrockModelClient(
   private val bedrockRuntimeClient: BedrockRuntimeClient,
   private val bedrockProperties: BedrockProperties,
   private val toolFactory: ToolFactory,
-  private val sageMakerRuntimeClient: SageMakerRuntimeClient
 ) : BedrockPort {
   override fun converse(
     prompt: String,
