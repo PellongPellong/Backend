@@ -20,4 +20,8 @@ class FoodQueryService(
     override fun getTop3(address: String): List<Food> {
         return foodRepository.findTop3ByAddress(address).map { FoodMapper.toDomain(it) }
     }
+
+    override fun findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(topic: String): List<Food> {
+        return foodRepository.findTop5ByNameContainingOrAddressContainingOrderByRatingDesc(topic).map { FoodMapper.toDomain(it) }
+    }
 }
