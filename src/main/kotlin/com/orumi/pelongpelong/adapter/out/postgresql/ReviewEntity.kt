@@ -7,8 +7,10 @@ import jakarta.persistence.*
 class ReviewEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     var id: Long? = null,
+
+    @Column(nullable = false)
+    var review: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
@@ -16,8 +18,5 @@ class ReviewEntity (
         referencedColumnName = "food_id",
         nullable = false
     )
-    var food: FoodEntity,
-
-    @Column(name = "review", nullable = false)
-    var review: String,
+    var food: FoodEntity? = null,
 )
