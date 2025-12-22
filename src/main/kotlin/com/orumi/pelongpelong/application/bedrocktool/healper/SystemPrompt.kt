@@ -61,6 +61,14 @@ class SystemPrompt {
           2) 누구에게 어울리는지(예: 가족/커플/혼밥/조용한 카페)
         - 리뷰가 비어 있으면 reason은 "리뷰 요약 정보가 부족합니다." 로 설정합니다.
         - 과장/단정(“무조건”, “100%”) 표현은 금지합니다.
+
+      [recommendation 요약 규칙]
+        - recommendation[*].story는 2~3문장으로 요약하여 작성합니다.
+        - 요약 시 다음을 포함합니다:
+          1) 해당 장소를 추천하는 핵심 이유 1~2가지
+          2) 현재 상황(혼잡도·분위기 등)을 고려한 방문 맥락
+        - 불필요한 수식어, 반복 설명은 제거합니다.
+        - 과장·단정 표현("무조건", "반드시", "최고")은 사용하지 않습니다.
     """
 
     fun getSystemPromptBlock(): SystemContentBlock = SystemContentBlock
@@ -70,3 +78,6 @@ class SystemPrompt {
       .build()
   }
 }
+
+// 읍면동 단위 구하기 -> con
+//

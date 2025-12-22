@@ -20,7 +20,7 @@ object FoodMapper {
 
         domain.reviews.forEach { reviewDomain ->
             val reviewEntity = ReviewMapper.toEntity(reviewDomain)
-            entity.addReview(reviewEntity) // ✅ 양방향 관계 보장
+            entity.addReview(reviewEntity)
         }
 
         return entity

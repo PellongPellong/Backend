@@ -5,6 +5,8 @@ import com.orumi.pelongpelong.application.bedrocktool.ToolRegistry
 import com.orumi.pelongpelong.application.bedrocktool.healper.AdditionalModelRequestFields
 import com.orumi.pelongpelong.application.bedrocktool.healper.InferenceConfig
 import com.orumi.pelongpelong.application.bedrocktool.healper.SystemPrompt
+import com.orumi.pelongpelong.common.exception.ErrorType
+import com.orumi.pelongpelong.common.exception.PelongException
 import com.orumi.pelongpelong.infrastructure.config.BedrockProperties
 import software.amazon.awssdk.core.document.Document
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient
@@ -69,6 +71,8 @@ class BedrockToolChainingService(
           .firstOrNull { it.type() == ContentBlock.Type.TEXT }
           ?.text()
           ?: "" // 모델이 텍스트 안 준 케이스
+      } else if (response.stopReason() == StopReason.GUARDRAIL_INTERVENED) {
+        throw PelongException(ErrorType.BAD_REQUEST, "응답할 수 없는 답변이에요, 제주도 여행에 관련된 질문을 해 주요 ")
       }
 
       // toolUse가 있으면 실행하고 toolResult를 history에 추가한 뒤 루프 계속

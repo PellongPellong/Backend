@@ -13,4 +13,8 @@ class TourSpotQueryService(
     override fun findByName(address: String): TourSpot {
         return TourSpotMapper.toDomain(tourSpotPort.findByName(address))
     }
+
+    override fun findByNameContainingOrAddressContaining(name: String): List<TourSpot> {
+        return tourSpotPort.findByNameContainingOrAddressContaining(name).map { TourSpotMapper.toDomain(it) }
+    }
 }
