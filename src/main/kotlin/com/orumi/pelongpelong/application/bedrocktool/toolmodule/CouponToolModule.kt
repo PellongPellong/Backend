@@ -3,6 +3,7 @@ package com.orumi.pelongpelong.application.bedrocktool.toolmodule
 import com.orumi.pelongpelong.application.bedrocktool.ToolHandler
 import com.orumi.pelongpelong.application.bedrocktool.ToolModule
 import com.orumi.pelongpelong.application.port.`in`.query.FoodQueryUseCase
+import com.orumi.pelongpelong.application.port.`in`.query.TourSpotQueryUseCase
 import com.orumi.pelongpelong.domain.chat.Coupon
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.document.Document
@@ -12,7 +13,8 @@ import software.amazon.awssdk.services.bedrockruntime.model.ToolSpecification
 
 @Component
 class CouponToolModule(
-  private val foodQueryUseCase: FoodQueryUseCase
+  private val foodQueryUseCase: FoodQueryUseCase,
+  private val tourSpotQueryUseCase: TourSpotQueryUseCase
 ) : ToolModule {
     override fun tool(): Tool {
         val propertiesDoc = Document.mapBuilder()
@@ -49,8 +51,9 @@ class CouponToolModule(
             override fun handle(input: Document): Document {
                 // input은 {"a":..., "b":...} 형태라고 가정
                 val recommendLocation = input.asMap()["recommend_location"]?.asString()?: throw IllegalArgumentException("recommend_location is required")
+                val base = tourSpotQueryUseCase.findByNameContainingOrAddressContaining(recommendLocation).first()
 
-              val coupons = getCoupons(recommendLocation)
+              val coupons = getCoupons(base.place)
                 // ToolResultContentBlock.fromJson()에 넣을 JSON
                 val resultDoc: Document = Document.mapBuilder()
                   .putList("Coupon",
