@@ -3,6 +3,7 @@ package com.orumi.pelongpelong.application.bedrocktool.toolmodule
 import com.orumi.pelongpelong.application.bedrocktool.ToolHandler
 import com.orumi.pelongpelong.application.bedrocktool.ToolModule
 import com.orumi.pelongpelong.application.port.`in`.query.FoodQueryUseCase
+import com.orumi.pelongpelong.application.port.`in`.query.TourSpotQueryUseCase
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.document.Document
 import software.amazon.awssdk.services.bedrockruntime.model.Tool
@@ -10,7 +11,10 @@ import software.amazon.awssdk.services.bedrockruntime.model.ToolInputSchema
 import software.amazon.awssdk.services.bedrockruntime.model.ToolSpecification
 
 @Component
-class FoodToolModule(private val foodQueryUseCase: FoodQueryUseCase) : ToolModule {
+class FoodToolModule(
+  private val foodQueryUseCase: FoodQueryUseCase,
+  private val tourSpotQueryUseCase: TourSpotQueryUseCase
+) : ToolModule {
   override fun tool(): Tool {
     val propertiesDoc = Document.mapBuilder()
       .putDocument(
@@ -50,7 +54,8 @@ class FoodToolModule(private val foodQueryUseCase: FoodQueryUseCase) : ToolModul
         val recommendLocation = input.asMap()["recommend_location"]?.asString()
           ?: throw IllegalArgumentException("recommend_location is required")
 
-        val foods = foodQueryUseCase.findTop3ByAddressContainingOrderByRatingDesc(recommendLocation)
+        val base = tourSpotQueryUseCase.findByNameContainingOrAddressContaining(recommendLocation).first()
+        val foods = foodQueryUseCase.findTop3ByAddressContainingOrderByRatingDesc(base.place)
 
         val resultDoc: Document = Document.mapBuilder().putList(
           "Around",
