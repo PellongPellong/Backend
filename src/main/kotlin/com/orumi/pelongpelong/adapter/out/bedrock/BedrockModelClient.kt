@@ -47,10 +47,10 @@ class BedrockModelClient(
       chanining.converseWithTools(prompt)
     } catch (e: BedrockRuntimeException) {
       logger.error(e) { "Bedrock converse failed: statusCode=${e.statusCode()}, modelId=$resolvedModelId" }
-      throw PelongException(ErrorType.INTERNAL_SERVER_ERROR, "Bedrock converse failed: ${e.message}")
+      throw PelongException(ErrorType.INTERNAL_SERVER_ERROR, e.message.toString())
     } catch (e: Exception) {
       logger.error(e) { "Bedrock converse failed: ${e.message}" }
-      throw PelongException(ErrorType.INTERNAL_SERVER_ERROR, "Bedrock converse failed: ${e.message}")
+      throw PelongException(ErrorType.INTERNAL_SERVER_ERROR, e.message.toString())
     }
   }
 
