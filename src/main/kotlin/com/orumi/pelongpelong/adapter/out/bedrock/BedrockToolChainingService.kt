@@ -81,6 +81,7 @@ class BedrockToolChainingService(
       val toolUses = extractToolUses(assistantMsg)
       if (toolUses.isNotEmpty()) {
         // llm이 사용하라는 tool 실행
+        logger.error { "too use setting"  + response.toString() }
         val executions = toolRegistry.executeAll(toolUses)
         // ToolExecution 실행 결과들
         val toolResultMsg = buildToolResultMessage(executions)
