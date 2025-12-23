@@ -110,7 +110,8 @@ class CongestionToolModule(
 //          congestionPredictionPort.predict(it)
 //        }
         val locationStatus = LocationStatus(
-          locationName = baseLocation,
+//          locationName = baseLocation,
+          locationName = baseLocationName,
           locationStatus = when (filled[0]) {
             in 0..25 -> 1
             in 26..50 -> 2
