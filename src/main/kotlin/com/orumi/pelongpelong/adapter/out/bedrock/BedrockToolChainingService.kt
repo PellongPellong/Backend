@@ -12,6 +12,7 @@ import software.amazon.awssdk.core.document.Document
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient
 import software.amazon.awssdk.services.bedrockruntime.model.*
 
+private val logger = mu.KotlinLogging.logger {}
 class BedrockToolChainingService(
   private val bedrockRuntimeClient: BedrockRuntimeClient,
   private val modelIdProvider: () -> String,
@@ -72,7 +73,8 @@ class BedrockToolChainingService(
           ?.text()
           ?: "" // 모델이 텍스트 안 준 케이스
       } else if (response.stopReason() == StopReason.GUARDRAIL_INTERVENED) {
-        throw PelongException(ErrorType.BAD_REQUEST, "응답할 수 없는 답변이에요, 제주도 여행에 관련된 질문을 해 주요 ")
+        logger.debug { "Guardrail activated : " + response.toString() }
+        throw PelongException(ErrorType.BAD_REQUEST, "응답할 수 없는 답변이에요, 제주도 여행에 관련된 질문을 해 주세요 ")
       }
 
       // toolUse가 있으면 실행하고 toolResult를 history에 추가한 뒤 루프 계속
