@@ -21,7 +21,7 @@ class CouponToolModule(
 ) : ToolModule {
     override fun tool(): Tool {
         val propertiesDoc = Document.mapBuilder()
-          .putDocument("recommend_location",Document.mapBuilder()
+          .putDocument("base_location",Document.mapBuilder()
               .putString("type", "string  ")
               .putString("description", "base location for coupon recommendation")
               .build())
@@ -33,7 +33,7 @@ class CouponToolModule(
           .putList(
             "required",
             listOf(
-              Document.fromString("recommend_location"),
+              Document.fromString("base_location"),
             )
           )
           .putBoolean("additionalProperties", false)
@@ -41,7 +41,7 @@ class CouponToolModule(
 
         val spec = ToolSpecification.builder()
           .name("coupon_tool")
-          .description("tool for get coupons around recommend_location")
+          .description("tool for get coupons around location")
           .inputSchema(ToolInputSchema.fromJson(schema))
           .build()
 
@@ -54,8 +54,9 @@ class CouponToolModule(
             override fun handle(input: Document): Document {
               logger.error { "errorlog for search,  Coupon Tool In" }
 
-              val recommendLocation = input.asMap()["recommend_location"]?.asString()?: throw IllegalArgumentException("recommend_location is required")
-                val base = tourSpotQueryUseCase.findByNameContainingOrAddressContaining(recommendLocation).first()
+              val baseLocation = input.asMap()["base_location"]?.asString()?: throw IllegalArgumentException("base_location is required")
+                val base = tourSpotQueryUseCase.findByNameContainingOrAddressContaining(baseLocation).firstOrNull()
+                  ?: return Document.mapBuilder().putNull("Coupon").build()
 
               val coupons = getCoupons(base.place)
                 // ToolResultContentBlock.fromJson()에 넣을 JSON
