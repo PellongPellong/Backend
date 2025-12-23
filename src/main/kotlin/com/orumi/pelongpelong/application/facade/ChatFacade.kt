@@ -24,22 +24,22 @@ class ChatFacade(
     var chat = chatCommandUseCase.save(chatCommand)
     logger.error { chat.pk }
 
-    val chatHistory = this.getChatConverseHistory(chatCommand.sessionId).toMutableList()
-    var historyMessage = ""
-    if(chatHistory.size > 1) {
-      historyMessage += "---previous conversation history START\n"
-      chatHistory.filter { it.sk != chat.sk }.map{
-        historyMessage += "userInputMessage: ${it.userInputText} \n"
-        historyMessage += "LLM responseMessage: ${it.bedrockResponseText} \n"
-      }
-      historyMessage += "---previous conversation history END\n"
-    }
+//    val chatHistory = this.getChatConverseHistory(chatCommand.sessionId).toMutableList()
+//    var historyMessage = ""
+//    if(chatHistory.size > 1) {
+//      historyMessage += "---previous conversation history START\n"
+//      chatHistory.filter { it.sk != chat.sk }.map{
+//        historyMessage += "userInputMessage: ${it.userInputText} \n"
+//        historyMessage += "LLM responseMessage: ${it.bedrockResponseText} \n"
+//      }
+//      historyMessage += "---previous conversation history END\n"
+//    }
 
 
     //2.call bedrock api
 //    val baseLocation = bedrockPort.invoke(chatCommand.message )
 //    val responseText = bedrockPort.converse(historyMessage + chatCommand.message + "***base_location: ${baseLocation} ***")
-    val responseText = bedrockPort.converse(historyMessage + chatCommand.message)
+    val responseText = bedrockPort.converse(chatCommand.message)
 
     //3. update dynamoDB with response
     // 비동기 처리 필요
