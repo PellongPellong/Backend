@@ -96,7 +96,13 @@ class CongestionToolModule(
           timeTable = responseList.mapIndexed { index, result ->
             TimeTable(
               time = "${requestList[index].hour}:00",
-              congestion = result.predictedCongestion.toInt()
+              congestion = when(result.predictedCongestion.toInt()){
+                in 0..25 -> 1
+                in 26..50 -> 2
+                in 51..75 -> 3
+                in 75..100 -> 4
+                else -> 5
+              }
             )
           },
           coordinate = Coordinate(lat = base.latitude, lng = base.longitude)
