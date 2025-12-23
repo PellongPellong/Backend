@@ -35,6 +35,8 @@ dependencies {
 	implementation("software.amazon.awssdk:dynamodb-enhanced")
 	implementation("software.amazon.awssdk:bedrockruntime")
 	implementation("org.postgresql:postgresql")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8")
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 

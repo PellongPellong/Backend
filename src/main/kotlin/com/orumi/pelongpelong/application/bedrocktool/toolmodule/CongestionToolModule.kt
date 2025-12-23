@@ -11,6 +11,15 @@ import com.orumi.pelongpelong.common.exception.PelongException
 import com.orumi.pelongpelong.domain.chat.Coordinate
 import com.orumi.pelongpelong.domain.chat.LocationStatus
 import com.orumi.pelongpelong.domain.chat.TimeTable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.document.Document
@@ -87,16 +96,32 @@ class CongestionToolModule(
             featVisitor = FeatVisitor.valueOf(today.month.toString().padStart(2, '0')).avgVisitor,
           )
         }
-        val responseList = requestList.map {
-          congestionPredictionPort.predict(it)
+
+        val indexed = getPredictionAsync(requestList)
+        val filled: List<Int> = buildList(indexed.size) {
+          var lastGood = 0
+          for (r in indexed) {
+            val v = r.congestion ?: lastGood
+            add(v)
+            if (r.congestion != null) lastGood = r.congestion
+          }
         }
+//        val responseList = requestList.map {
+//          congestionPredictionPort.predict(it)
+//        }
         val locationStatus = LocationStatus(
           locationName = baseLocation,
-          locationStatus = responseList[0].predictedCongestion.toInt(),
-          timeTable = responseList.mapIndexed { index, result ->
+          locationStatus = when (filled[0]) {
+            in 0..25 -> 1
+            in 26..50 -> 2
+            in 51..75 -> 3
+            in 75..100 -> 4
+            else -> 5
+          },
+          timeTable = filled.mapIndexed { index, result ->
             TimeTable(
               time = "${requestList[index].hour}:00",
-              congestion = when(result.predictedCongestion.toInt()){
+              congestion = when (result) {
                 in 0..25 -> 1
                 in 26..50 -> 2
                 in 51..75 -> 3
@@ -136,4 +161,47 @@ class CongestionToolModule(
         return resultDoc
       }
     }
+
+  fun getPredictionAsync(requestList: List<CongestionPredictionRequest>): List<IndexedResult> = runBlocking {
+    val semaphore = Semaphore(permits = 4)
+
+    supervisorScope<List<IndexedResult>> {
+      requestList.mapIndexed { idx, req ->
+        async(Dispatchers.IO) {
+          semaphore.withPermit {
+            val v = predictWithRetry(req, 1, timeoutMs = 1000L)
+            IndexedResult(idx, v?.predictedCongestion?.toInt())
+          }
+        }
+      }.awaitAll()
+    }.sortedBy { it.index }
+  }
+
+  private suspend fun predictWithRetry(
+    req: CongestionPredictionRequest,
+    retries: Int,
+    timeoutMs: Long,
+  ): com.orumi.pelongpelong.application.port.out.CongestionPredictionResult? {
+    var last: Exception? = null
+    for (attempt in 0..retries) {
+      val result = runCatching {
+        withTimeout(timeoutMs) {
+          congestionPredictionPort.predict(req)
+        }
+      }.getOrElse { e ->
+        last = e as? Exception ?: Exception(e)
+        null
+      }
+
+      if (result != null) return result
+
+      if (attempt < retries) {
+        delay(if (attempt == 0) 150L else 300L) // 백오프
+      }
+    }
+    // 관대 모드: 여기서 throw 안 하고 null 반환(상위에서 직전 성공값으로 채움)
+    return null
+  }
 }
+
+data class IndexedResult(val index: Int, val congestion: Int?)
