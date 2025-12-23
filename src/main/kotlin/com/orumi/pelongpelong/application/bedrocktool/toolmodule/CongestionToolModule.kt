@@ -11,12 +11,15 @@ import com.orumi.pelongpelong.common.exception.PelongException
 import com.orumi.pelongpelong.domain.chat.Coordinate
 import com.orumi.pelongpelong.domain.chat.LocationStatus
 import com.orumi.pelongpelong.domain.chat.TimeTable
+import mu.KotlinLogging
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.document.Document
 import software.amazon.awssdk.services.bedrockruntime.model.Tool
 import software.amazon.awssdk.services.bedrockruntime.model.ToolInputSchema
 import software.amazon.awssdk.services.bedrockruntime.model.ToolSpecification
 import java.time.LocalDateTime
+
+private val logger = KotlinLogging.logger {}
 
 @Component
 class CongestionToolModule(
@@ -59,13 +62,16 @@ class CongestionToolModule(
     object : ToolHandler {
       override val name: String = "congestion_tool"
       override fun handle(input: Document): Document {
-        // input은 {"a":..., "b":...} 형태라고 가정
+
+        logger.error { "errorlog for search,  Congestion Tool In" }
+
         val baseLocationName =
           input.asMap()["base_location"]?.asString() ?: throw IllegalArgumentException("base_location not specified")
-        val base= tourSpotPort.findByNameContainingOrAddressContaining(baseLocationName).firstOrNull()
-        val baseLocation = base?.place ?: throw PelongException(ErrorType.NOT_FOUND,"해당 명소를 찾을 수 없습니다: $baseLocationName")
+        val base = tourSpotPort.findByNameContainingOrAddressContaining(baseLocationName).firstOrNull()
+        val baseLocation =
+          base?.place ?: throw PelongException(ErrorType.NOT_FOUND, "해당 명소를 찾을 수 없습니다: $baseLocationName")
 
-
+        logger.error { "baseLocationName : $baseLocationName, baseLocation: $baseLocation" }
 
         var today = LocalDateTime.now()
         val requestList = (0..11).map {
@@ -111,12 +117,13 @@ class CongestionToolModule(
                       .putNumber("congestion", it.congestion)
                       .build()
                   }
-              ).build()
-          )
-          .putDocument(
-            "coordinates", Document.mapBuilder()
-              .putNumber("lat", locationStatus.coordinate!!.lat!!.toDouble())
-              .putNumber("lng", locationStatus.coordinate!!.lng!!.toDouble())
+              )
+              .putDocument(
+                "coordinates", Document.mapBuilder()
+                  .putNumber("lat", locationStatus.coordinate!!.lat!!.toDouble())
+                  .putNumber("lng", locationStatus.coordinate!!.lng!!.toDouble())
+                  .build()
+              )
               .build()
           )
           .build()

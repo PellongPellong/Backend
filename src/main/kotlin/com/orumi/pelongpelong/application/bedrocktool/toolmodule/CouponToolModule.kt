@@ -5,11 +5,14 @@ import com.orumi.pelongpelong.application.bedrocktool.ToolModule
 import com.orumi.pelongpelong.application.port.`in`.query.FoodQueryUseCase
 import com.orumi.pelongpelong.application.port.`in`.query.TourSpotQueryUseCase
 import com.orumi.pelongpelong.domain.chat.Coupon
+import mu.KotlinLogging
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.document.Document
 import software.amazon.awssdk.services.bedrockruntime.model.Tool
 import software.amazon.awssdk.services.bedrockruntime.model.ToolInputSchema
 import software.amazon.awssdk.services.bedrockruntime.model.ToolSpecification
+
+private val logger = KotlinLogging.logger {}
 
 @Component
 class CouponToolModule(
@@ -49,8 +52,9 @@ class CouponToolModule(
         object : ToolHandler {
             override val name: String = "coupon_tool"
             override fun handle(input: Document): Document {
-                // input은 {"a":..., "b":...} 형태라고 가정
-                val recommendLocation = input.asMap()["recommend_location"]?.asString()?: throw IllegalArgumentException("recommend_location is required")
+              logger.error { "errorlog for search,  Coupon Tool In" }
+
+              val recommendLocation = input.asMap()["recommend_location"]?.asString()?: throw IllegalArgumentException("recommend_location is required")
                 val base = tourSpotQueryUseCase.findByNameContainingOrAddressContaining(recommendLocation).first()
 
               val coupons = getCoupons(base.place)
