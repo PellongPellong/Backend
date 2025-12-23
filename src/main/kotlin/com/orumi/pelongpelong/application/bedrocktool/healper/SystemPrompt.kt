@@ -14,6 +14,8 @@ class SystemPrompt {
       """
 
     const val RESPONSE_TYPE_FIXER = """ 
+      [tool 사용 규칙]
+        - tool사용시 location 은 최초에 사용된 location으로 고정합니다.
       [출력 절대 규칙 — 매우 중요]
         - 출력은 반드시 "하나의 JSON 객체"만 반환합니다.
         - JSON 이외의 어떤 텍스트도 출력하지 마세요. (설명, 인사, 주석, 마크다운, 코드블록, 로그 금지)
