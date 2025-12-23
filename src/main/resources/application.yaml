@@ -2,6 +2,10 @@ spring:
   application:
     name: pelongpelong
   datasource:
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      idle-timeout: 30000
     url: jdbc:postgresql://${AWS_RDS_POSTGRESQL_ENDPOINT}:5432/restaurant
     username: ${AWS_RDS_POSTGRESQL_USERNAME}
     password: ${AWS_RDS_POSTGRESQL_PASSWORD}

@@ -18,9 +18,9 @@ class FoodToolModule(
   override fun tool(): Tool {
     val propertiesDoc = Document.mapBuilder()
       .putDocument(
-        "recommend_location", Document.mapBuilder()
+        "base_location", Document.mapBuilder()
           .putString("type", "string")
-          .putString("description", "key for recommend location around restaurant")
+          .putString("description", "key for location around restaurant")
           .build()
       )
       .build()
@@ -31,7 +31,7 @@ class FoodToolModule(
       .putList(
         "required",
         listOf(
-          Document.fromString("recommend_location"),
+          Document.fromString("base_location"),
         )
       )
       .putBoolean("additionalProperties", false)
@@ -39,7 +39,7 @@ class FoodToolModule(
 
     val spec = ToolSpecification.builder()
       .name("food_recommendation_tool")
-      .description("tool for restaurant recommendation around reccomend_location")
+      .description("tool for restaurant recommendation around ")
       .inputSchema(ToolInputSchema.fromJson(schema))
       .build()
 
@@ -51,10 +51,11 @@ class FoodToolModule(
       override val name: String = "food_recommendation_tool"
       override fun handle(input: Document): Document {
 
-        val recommendLocation = input.asMap()["recommend_location"]?.asString()
-          ?: throw IllegalArgumentException("recommend_location is required")
+        val baseLocation = input.asMap()["base_location"]?.asString()
+          ?: throw IllegalArgumentException("base_location is required")
 
-        val base = tourSpotQueryUseCase.findByNameContainingOrAddressContaining(recommendLocation).first()
+        val base = tourSpotQueryUseCase.findByNameContainingOrAddressContaining(baseLocation).firstOrNull()
+          ?: return Document.mapBuilder().putNull("Around").build()
         val foods = foodQueryUseCase.findTop3ByAddressContainingOrderByRatingDesc(base.place)
 
         val resultDoc: Document = Document.mapBuilder().putList(
@@ -67,10 +68,11 @@ class FoodToolModule(
                   .putString("review", it.review)
                   .build()
               })
-              .putDocument("coordinates", Document.mapBuilder()
-                .putNumber("lat", food.latitude)
-                .putNumber("lng", food.longitude)
-                .build()
+              .putDocument(
+                "coordinates", Document.mapBuilder()
+                  .putNumber("lat", food.latitude)
+                  .putNumber("lng", food.longitude)
+                  .build()
               )
               .build()
           }).build()
